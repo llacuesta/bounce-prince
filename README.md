@@ -8,7 +8,7 @@ Bounce Prince is a 2D vertical platformer game using Java and Java Swing for the
 
 2. When creating a new feature, create a branch called `feature/[issue-number]/[feature-name]`. Make sure to be always in the develop branch first before creating a new branch.
 - ex. (while in develop branch) `git checkout feature/01/new-level`
-- issue numbers and feature names can be found here
+- issue numbers and feature names can be found [here](https://github.com/llacuesta/bounce-prince/issues)
 
 3. When changes are done, push the changes to your branch. After pushing changes to your branch, something like this should appear: 
    ![Push](https://imgur.com/dWLSLSY.jpg)
