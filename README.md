@@ -11,7 +11,7 @@ Bounce Prince is a 2D vertical platformer game using Java and Java Swing for the
 - issue numbers and feature names can be found here
 
 3. When changes are done, push the changes to your branch. After pushing changes to your branch, something like this should appear: 
-   ![Push](https://imgur.com/a/nJCydka.jpg)
+   ![Push](https://imgur.com/dWLSLSY.jpg)
    Click on compare & pull request to create a pull request.
 - `git push origin [branch-name]` to push changes
 
