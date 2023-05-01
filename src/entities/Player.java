@@ -5,9 +5,7 @@ import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
 import java.awt.image.BufferedImage;
-
 import main.Game;
-
 import java.awt.Graphics;
 import utils.LoadSave;
 
@@ -21,7 +19,8 @@ public class Player extends Entity {
 	// Movement Attributes
 	private boolean left, up, right, down, jump;
 	private boolean moving = false;
-	private float playerSpeed = 2.0f;
+	// TODO: Change to be relative to Game scale
+	private float playerSpeed = 0.75f * Game.TILE_SCALE;
 	
 	// Level Data
 	private int[][] levelData;
@@ -33,7 +32,7 @@ public class Player extends Entity {
 	// Gravity Attributes
 	private float airSpeed = 0f;
 	private float gravity = 0.04f * Game.TILE_SCALE;
-	private float jumpSpeed = -1.25f * Game.TILE_SCALE;
+	private float jumpSpeed = -1.70f * Game.TILE_SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.PLAYER_SCALE;
 	private boolean inAir = false;
 
@@ -41,6 +40,7 @@ public class Player extends Entity {
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		loadAnimations();
+		// TODO: Change width and height to int
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
 	}
 	

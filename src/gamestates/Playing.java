@@ -12,6 +12,9 @@ public class Playing extends State implements StateMethods {
 	// Instance Entities
 	private Player player;
 	private LevelHandler levelHandler;
+	
+	// Level Scrolling Attributes
+	private int yLevelOffset;
 
 	// Constructor
 	public Playing(Game game) {
@@ -22,7 +25,7 @@ public class Playing extends State implements StateMethods {
 	// Init Method
 	private void initClasses() {
 		levelHandler = new LevelHandler(game);
-		player = new Player(200, 200, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
+		player = new Player(200, 100, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 	}
 	

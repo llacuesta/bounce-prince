@@ -11,12 +11,14 @@ public class LevelHandler {
 	private Game game;
 	private BufferedImage[] levelSprite;
 	private Level levelOne; 
+	private int maxHeight;
 
 	// Constructor
 	public LevelHandler(Game game) {
 		this.game = game;
 		importLevelTiles();
 		levelOne = new Level(LoadSave.GetLevelData());
+		maxHeight = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ONE_DATA).getHeight();
 	}
 	
 	private void importLevelTiles() {
@@ -28,7 +30,6 @@ public class LevelHandler {
 				levelSprite[index] = img.getSubimage(i*8, j*8, 8, 8);
 			}
 		}
-		
 	}
 	
 	public Level getCurrentLevel() {
@@ -44,7 +45,7 @@ public class LevelHandler {
 	public void draw(Graphics g) {
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
 			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
-				int index = levelOne.getSpriteIndex(i, j);
+				int index = levelOne.getSpriteIndex(i, j + (maxHeight - Game.TILES_IN_HEIGHT));
 				if (index >= 96) {
 					g.drawImage(levelSprite[index - 96], i*Game.TILES_SIZE + Game.TILES_SIZE, j*Game.TILES_SIZE, -Game.TILES_SIZE, Game.TILES_SIZE, null);
 				} else {
