@@ -42,14 +42,14 @@ public class LevelHandler {
 	}
 	
 	// Render methods
-	public void draw(Graphics g) {
-		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
+	public void draw(Graphics g, int levelOffset) {
+		for (int j = 0; j < maxHeight; j++) {
 			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
-				int index = levelOne.getSpriteIndex(i, j + (maxHeight - Game.TILES_IN_HEIGHT));
+				int index = levelOne.getSpriteIndex(i, j);
 				if (index >= 96) {
-					g.drawImage(levelSprite[index - 96], i*Game.TILES_SIZE + Game.TILES_SIZE, j*Game.TILES_SIZE, -Game.TILES_SIZE, Game.TILES_SIZE, null);
+					g.drawImage(levelSprite[index - 96], i*Game.TILES_SIZE + Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT))*Game.TILES_SIZE - levelOffset, -Game.TILES_SIZE, Game.TILES_SIZE, null);
 				} else {
-					g.drawImage(levelSprite[index], i*Game.TILES_SIZE, j*Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE, null);
+					g.drawImage(levelSprite[index], i*Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT))*Game.TILES_SIZE - levelOffset, Game.TILES_SIZE, Game.TILES_SIZE, null);
 				}
 			}
 		}	

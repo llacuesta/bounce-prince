@@ -19,7 +19,6 @@ public class Player extends Entity {
 	// Movement Attributes
 	private boolean left, up, right, down, jump;
 	private boolean moving = false;
-	// TODO: Change to be relative to Game scale
 	private float playerSpeed = 0.75f * Game.TILE_SCALE;
 	
 	// Level Data
@@ -155,9 +154,9 @@ public class Player extends Entity {
 	}
  	
 	// Render Methods
-	public void render(Graphics g) {
-		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null); 
-		drawHitbox(g);
+	public void render(Graphics g, int levelOffset) {
+		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset) - levelOffset, width, height, null); 
+		// drawHitbox(g);
 	}
 
 	// Misc Methods

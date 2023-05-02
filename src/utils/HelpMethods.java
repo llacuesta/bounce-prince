@@ -30,7 +30,7 @@ public class HelpMethods {
 		float xIndex = x / Game.TILES_SIZE;
 		float yIndex = y / Game.TILES_SIZE;
 		
-		int value = levelData[(int) yIndex + levelData.length - Game.TILES_IN_HEIGHT][(int) xIndex];
+		int value = levelData[(int) (yIndex + levelData.length - Game.TILES_IN_HEIGHT)][(int) xIndex];
 		if (value >= 96) value -= 96;
 		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 30, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
 			return true;
