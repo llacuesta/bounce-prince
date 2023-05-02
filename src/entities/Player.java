@@ -15,11 +15,13 @@ public class Player extends Entity {
 	private BufferedImage[][] animations;
 	private int animTick, animIndex, animSpeed = 20;
 	private int playerAction = IDLE;
+	private int flipX = 0;
+	private int flipW = 1;
 	
 	// Movement Attributes
 	private boolean left, up, right, down, jump;
 	private boolean moving = false;
-	private float playerSpeed = 0.75f * Game.TILE_SCALE;
+	private float playerSpeed = 0.6f * Game.TILE_SCALE;
 	
 	// Level Data
 	private int[][] levelData;
@@ -127,16 +129,23 @@ public class Player extends Entity {
 		if (jump) {
 			jump();
 		}
-		if (!left && !right && !inAir) {
-			return;
+		if (!inAir) {
+			if ((!left && !right) || (right && left)) {
+				return;
+			}
 		}
+			
 		float xSpeed = 0;
 		
 		if (left) {
 			xSpeed -= playerSpeed;
+			flipX = width;
+			flipW = -1;
 		} 
 		if (right) {
 			xSpeed += playerSpeed;
+			flipX = 0;
+			flipW = 1;
 		}
 		
 		if (!inAir) {
@@ -189,7 +198,7 @@ public class Player extends Entity {
  	
 	// Render Methods
 	public void render(Graphics g, int levelOffset) {
-		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset) - levelOffset, width, height, null); 
+		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset) - levelOffset, width * flipW, height, null); 
 		drawUI(g);
 		// drawHitbox(g);
 	}
