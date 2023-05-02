@@ -23,14 +23,18 @@ public class HelpMethods {
 		if (x < 0 || x >= Game.GAME_WIDTH) {
 			return true;
 		}
-		if (y < Game.GAME_HEIGHT - maxHeight || y >= Game.GAME_HEIGHT) {
+		if (y < Game.GAME_HEIGHT - maxHeight || y >= Game.GAME_HEIGHT + (2 * Game.TILES_SIZE)) {
 			return true;
 		}
 		
 		float xIndex = x / Game.TILES_SIZE;
 		float yIndex = y / Game.TILES_SIZE;
 		
-		int value = levelData[(int) (yIndex + levelData.length - Game.TILES_IN_HEIGHT)][(int) xIndex];
+		int yVal = (int) (yIndex + levelData.length - Game.TILES_IN_HEIGHT);
+		if (yVal >= levelData.length) {
+			yVal = levelData.length - 1;
+		}
+		int value = levelData[yVal][(int) xIndex];
 		if (value >= 96) value -= 96;
 		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 30, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
 			return true;

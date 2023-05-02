@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import main.Game;
 import java.awt.Graphics;
 import utils.LoadSave;
+import gamestates.Playing;
 
 public class Player extends Entity {
 	
@@ -54,10 +55,14 @@ public class Player extends Entity {
 	private int maxHealth = 3;
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
+	
+	// Others
+	private Playing playing;
 
 	// Constructor
-	public Player(float x, float y, int width, int height) {
+	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
+		this.playing = playing;
 		loadAnimations();
 		// TODO: Change width and height to int
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
@@ -66,12 +71,17 @@ public class Player extends Entity {
 	// Update Methods
 	public void update() {
 		updateHealthBar();
+		if (currentHealth <= 0) {
+			playing.setGameOver(true);
+			return;
+		}
 		updatePos();
 		updateAnimationTick();
 		setAnimation();
 	}
 	
 	private void updateHealthBar() {
+		playing.checkIfWithinVisible();
 		livesBarWidth = fullLivesBarWidth - (int) ((currentHealth / (float) maxHealth) * fullLivesBarWidth);
 	}
 
@@ -274,5 +284,19 @@ public class Player extends Entity {
 		this.up = false;
 		this.right = false;
 		this.down = false;
+	}
+
+	public void resetAll() {
+		resetDirBooleans();
+		inAir = false;
+		moving = false;
+		playerAction = IDLE;
+		currentHealth = maxHealth;
+
+		hitbox.x = x;
+		hitbox.y = y;
+
+		if (!IsEntityOnFloor(hitbox, levelData))
+			inAir = true;
 	}
 }

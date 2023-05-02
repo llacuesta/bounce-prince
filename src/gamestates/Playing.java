@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import entities.Player;
 import levels.LevelHandler;
 import main.Game;
+import ui.GameOverOverlay;
 import utils.LoadSave;
 
 public class Playing extends State implements StateMethods {
@@ -21,6 +22,10 @@ public class Playing extends State implements StateMethods {
 	private int minTilesOffset = Game.TILES_IN_HEIGHT - levelTilesTall;
 	private int minLevelOffsetY = minTilesOffset * Game.TILES_SIZE;
 	
+	// Game Over Attributes
+	private GameOverOverlay gameOverOverlay;
+	private boolean gameOver = false;
+	
 	// Constructor
 	public Playing(Game game) {
 		super(game);
@@ -30,8 +35,9 @@ public class Playing extends State implements StateMethods {
 	// Init Method
 	private void initClasses() {
 		levelHandler = new LevelHandler(game);
-		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
+		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), this);
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
+		gameOverOverlay = new GameOverOverlay(this);
 	}
 	
 	// Misc Methods
@@ -45,9 +51,11 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void update() {
-		levelHandler.update();
-		player.update();
-		checkCloseToBorder();
+		if (!gameOver) {
+			levelHandler.update();
+			player.update();
+			checkCloseToBorder();
+		}
 	}
 
 	private void checkCloseToBorder() {
@@ -69,44 +77,71 @@ public class Playing extends State implements StateMethods {
 	public void draw(Graphics g) {
 		levelHandler.draw(g, yLevelOffset);
 		player.render(g, yLevelOffset);
+		
+		if (gameOver) {
+			gameOverOverlay.draw(g);
+		}
 	}
 
+	public void resetAll() {
+		gameOver = false;
+		player.resetAll();
+		yLevelOffset = 0;
+	}
+	
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+	
+	public void checkIfWithinVisible() {
+		if (player.getHitbox().y > Game.GAME_HEIGHT + yLevelOffset) {
+			player.changeHealth(-3);
+		}
+	}
+	
+	// Input methods
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_W:
-			player.setJump(true);
-			break;
-		case KeyEvent.VK_A:
-			player.setLeft(true);
-			break;
-		case KeyEvent.VK_D:
-			player.setRight(true);
-			break;
-		case KeyEvent.VK_SPACE:
-			player.setJump(true);
-			break;
-		case KeyEvent.VK_ESCAPE:
-			Gamestate.state = Gamestate.MENU;
-			break;
+		if (gameOver) {
+			gameOverOverlay.keyPressed(e);
+		} else {
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_W:
+				player.setJump(true);
+				break;
+			case KeyEvent.VK_A:
+				player.setLeft(true);
+				break;
+			case KeyEvent.VK_D:
+				player.setRight(true);
+				break;
+			case KeyEvent.VK_SPACE:
+				player.setJump(true);
+				break;
+			case KeyEvent.VK_ESCAPE:
+				Gamestate.state = Gamestate.MENU;
+				break;
+			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_W:
-			player.setJump(false);
-			break;
-		case KeyEvent.VK_A:
-			player.setLeft(false);
-			break;
-		case KeyEvent.VK_D:
-			player.setRight(false);
-			break;
-		case KeyEvent.VK_SPACE:
-			player.setJump(false);
-			break;
-		}
+		if (!gameOver) {
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_W:
+				player.setJump(false);
+				break;
+			case KeyEvent.VK_A:
+				player.setLeft(false);
+				break;
+			case KeyEvent.VK_D:
+				player.setRight(false);
+				break;
+			case KeyEvent.VK_SPACE:
+				player.setJump(false);
+				break;
+			}
+		}	
 	} 
 }
