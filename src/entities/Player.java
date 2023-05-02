@@ -34,6 +34,24 @@ public class Player extends Entity {
 	private float jumpSpeed = -1.70f * Game.TILE_SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.PLAYER_SCALE;
 	private boolean inAir = false;
+	
+	// Lives Attributes
+	private BufferedImage emptyLivesBar;
+	private BufferedImage fullLivesBar;
+
+	private int emptyLivesBarWidth = (int) (24 * Game.TILE_SCALE);
+	private int emptyLivesHeight = (int) (8 * Game.TILE_SCALE);
+	private int emptyLivesBarX = (int) (Game.GAME_WIDTH - (emptyLivesBarWidth + (10 * Game.TILE_SCALE)));
+	private int emptyLivesBarY = (int) (10 * Game.TILE_SCALE);
+
+	private int fullLivesBarWidth = (int) (24 * Game.TILE_SCALE);
+	private int fullLivesBarHeight = (int) (8 * Game.TILE_SCALE);
+	private int fullLivesBarX = (int) (Game.GAME_WIDTH - (fullLivesBarWidth + (10 * Game.TILE_SCALE)));
+	private int fullLivesBarY = (int) (10 * Game.TILE_SCALE);
+	
+	private int maxHealth = 3;
+	private int currentHealth = maxHealth;
+	private int livesBarWidth = 0;
 
 	// Constructor
 	public Player(float x, float y, int width, int height) {
@@ -45,11 +63,16 @@ public class Player extends Entity {
 	
 	// Update Methods
 	public void update() {
+		updateHealthBar();
 		updatePos();
 		updateAnimationTick();
 		setAnimation();
 	}
 	
+	private void updateHealthBar() {
+		livesBarWidth = fullLivesBarWidth - (int) ((currentHealth / (float) maxHealth) * fullLivesBarWidth);
+	}
+
 	private void updateAnimationTick() {
 		animTick++;
 		if (animTick >= animSpeed) {
@@ -58,6 +81,17 @@ public class Player extends Entity {
 			if (animIndex >= GetSpriteAmount(playerAction)) {
 				animIndex = 0;
 			}
+		}
+	}
+
+	public void changeHealth(int value) {
+		currentHealth += value;
+
+		if (currentHealth <= 0) {
+			currentHealth = 0;
+			// TODO: Implement game over
+		} else if (currentHealth >= maxHealth) {
+			currentHealth = maxHealth;
 		}
 	}
 	
@@ -156,18 +190,29 @@ public class Player extends Entity {
 	// Render Methods
 	public void render(Graphics g, int levelOffset) {
 		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset) - levelOffset, width, height, null); 
+		drawUI(g);
 		// drawHitbox(g);
 	}
 
 	// Misc Methods
 	private void loadAnimations() {
 		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
-			
+		emptyLivesBar = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_HEALTH_BAR);
+		fullLivesBar = LoadSave.GetSpriteAtlas(LoadSave.FULL_HEALTH_BAR);
+
+		// Player animations
 		animations = new BufferedImage[5][8];
 		for (int j = 0; j < animations.length; j++) {
 			for (int i = 0; i < animations[j].length; i++) {
 				animations[j][i] = img.getSubimage(i*50, j*37, 50, 37);
 			}
+		}
+	}
+	
+	private void drawUI(Graphics g) {
+		g.drawImage(emptyLivesBar, emptyLivesBarX, emptyLivesBarY, emptyLivesBarWidth, emptyLivesHeight, null);
+		if (currentHealth != 0) {
+			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), fullLivesBarX, fullLivesBarY, fullLivesBarWidth - livesBarWidth, fullLivesBarHeight, null);
 		}
 	}
 	
