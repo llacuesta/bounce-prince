@@ -6,13 +6,21 @@ import java.awt.event.KeyEvent;
 import entities.Player;
 import levels.LevelHandler;
 import main.Game;
+import utils.LoadSave;
 
 public class Playing extends State implements StateMethods {
 
 	// Instance Entities
 	private Player player;
 	private LevelHandler levelHandler;
-
+	
+	// Level Scrolling Attributes
+	private int yLevelOffset;
+	private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
+	private int levelTilesTall = LoadSave.GetLevelData().length;
+	private int minTilesOffset = Game.TILES_IN_HEIGHT - levelTilesTall;
+	private int minLevelOffsetY = minTilesOffset * Game.TILES_SIZE;
+	
 	// Constructor
 	public Playing(Game game) {
 		super(game);
@@ -22,7 +30,7 @@ public class Playing extends State implements StateMethods {
 	// Init Method
 	private void initClasses() {
 		levelHandler = new LevelHandler(game);
-		player = new Player(200, 200, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
+		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 	}
 	
@@ -39,12 +47,28 @@ public class Playing extends State implements StateMethods {
 	public void update() {
 		levelHandler.update();
 		player.update();
+		checkCloseToBorder();
+	}
+
+	private void checkCloseToBorder() {
+		int playerY = (int) player.getHitbox().y;
+		int diff = playerY - yLevelOffset;
+		
+		if (diff < topBorder) {
+			yLevelOffset += diff - topBorder;
+		}
+		
+		if (yLevelOffset > 0) {
+			yLevelOffset = 0;
+		} else if (yLevelOffset < minLevelOffsetY) {
+			yLevelOffset = minLevelOffsetY;
+		}
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		levelHandler.draw(g);
-		player.render(g);
+		levelHandler.draw(g, yLevelOffset);
+		player.render(g, yLevelOffset);
 	}
 
 	@Override
