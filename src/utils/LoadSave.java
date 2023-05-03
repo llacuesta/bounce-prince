@@ -6,18 +6,19 @@ import java.io.InputStream;
 import java.awt.Color;
 import javax.imageio.ImageIO;
 
+import main.Game;
+
 public class LoadSave {
-	
+
 	public static final String PLAYER_ATLAS = "adventurer_sprites.png";
 	public static final String LEVEL_ATLAS = "level_tiles.png";
 	public static final String LEVEL_ONE_DATA = "level_1_data.png";
-	public static final String EMPTY_HEALTH_BAR = "hearts_empty.png";
-	public static final String FULL_HEALTH_BAR = "hearts_full.png";
-	
+	public static final String COUNTDOWN = "blocktext.png";
+
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
 		InputStream is = LoadSave.class.getResourceAsStream("/assets/" + fileName);
-		
+
 		try {
 			img = ImageIO.read(is);
 		} catch (IOException e) {
@@ -29,14 +30,14 @@ public class LoadSave {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return img;
 	}
-	
+
 	public static int[][] GetLevelData() {
+		int[][] levelData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
 		BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
-		int[][] levelData = new int[img.getHeight()][img.getWidth()];
-		
+
 		for (int j = 0; j < img.getHeight(); j++) {
 			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
