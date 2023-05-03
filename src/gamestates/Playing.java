@@ -94,7 +94,7 @@ public class Playing extends State implements StateMethods {
 	}
 	
 	public void checkIfWithinVisible() {
-		if (player.getHitbox().y > Game.GAME_HEIGHT + yLevelOffset) {
+		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
 			player.changeHealth(-3);
 		}
 	}

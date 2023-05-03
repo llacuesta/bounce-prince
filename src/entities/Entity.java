@@ -39,4 +39,8 @@ public abstract class Entity {
 	public Rectangle2D.Float getHitbox() {
 		return this.hitbox;
 	}
+	
+	public int getHeight() {
+		return this.height;
+	}
 }
