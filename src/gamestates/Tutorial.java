@@ -1,6 +1,8 @@
 package gamestates;
 
 import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 
 import entities.Countdown;
@@ -9,38 +11,50 @@ import entities.Timer;
 import levels.LevelHandler;
 import main.Game;
 
-public class Playing extends State implements StateMethods {
-
+public class Tutorial extends State implements StateMethods {
 	// Instance Entities
 	private Player player;
 	private LevelHandler levelHandler;
-	private Countdown countdown;
-	private Timer timer;
-	private boolean exitted;
 
 	// Constructor
-	public Playing(Game game) {
+	public Tutorial(Game game) {
 		super(game);
 		initClasses();
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		int y = 100;
+		int x =50;
+
+		levelHandler.draw(g);
+		player.render(g);
+
+		g.setColor(Color.white);
+		g.setFont(new Font("Monospaced", Font.BOLD, 20));
+		g.drawString("HOW TO PLAY", x, y);
+		g.drawString("Press 'A' to MOVE LEFT.", x, y += 40);
+		g.drawString("Press 'D' to MOVE RIGHT.", x, y += 30);
+		g.drawString("Press 'W' or SpaceBar to JUMP.", x, y += 30);
+		g.drawString("Press Esc to RETURN to MENU.", x, y += 30);
+
+		g.drawString("GOAL", x, y += 80);
+		g.drawString("BE THE LAST PLAYER LEFT or", x, y += 30);
+		g.drawString("BE THE FIRST TO REACH THE TOP.", x, y += 30);
+
+		g.drawString("\"MAY THE ODDS BE EVER IN YOUR FAVOR\"", 30, 750);
 	}
 
 	// Init Method
 	private void initClasses() {
 		levelHandler = new LevelHandler(game);
-		player = new Player(200, 200, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
+		player = new Player(50, 530, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE));
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
-		countdown = new Countdown(145, 215, (int) (20 * Game.COUNT_SCALE), (int) (37 * Game.COUNT_SCALE));
-		timer = new Timer(20,50,0,0);
-		exitted = false;
 	}
 
 	// Misc Methods
 	public Player getPlayer() {
 		return player;
-	}
-
-	public Timer getTimer() {
-		return timer;
 	}
 
 	public void windowFocusLost() {
@@ -54,24 +68,8 @@ public class Playing extends State implements StateMethods {
 	}
 
 	@Override
-	public void draw(Graphics g) {
-		if(exitted) {
-			timer.startTime();
-			exitted = false;
-		}
-
-		levelHandler.draw(g);
-		player.render(g);
-		countdown.render(g, timer);
-
-		if(countdown.getCount() <= 0)
-			timer.draw(g);
-	}
-
-	@Override
 	public void keyPressed(KeyEvent e) {
-		if(countdown.getCount() <= 0) {
-			switch(e.getKeyCode()) {
+		switch(e.getKeyCode()) {
 			case KeyEvent.VK_W:
 				player.setJump(true);
 				break;
@@ -86,12 +84,9 @@ public class Playing extends State implements StateMethods {
 				break;
 			case KeyEvent.VK_ESCAPE:
 				Gamestate.state = Gamestate.MENU;
-				timer.saveTime();
-				exitted = true;
 				break;
 			default:
 				break;
-			}
 		}
 	}
 
@@ -109,6 +104,8 @@ public class Playing extends State implements StateMethods {
 			break;
 		case KeyEvent.VK_SPACE:
 			player.setJump(false);
+			break;
+		default:
 			break;
 		}
 	}
