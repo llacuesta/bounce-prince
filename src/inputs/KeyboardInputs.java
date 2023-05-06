@@ -11,17 +11,17 @@ import static utils.Constants.Directions.*;
 public class KeyboardInputs implements KeyListener {
 	// Instance Attributes
 	private GamePanel gamePanel;
-
+	
 	// Constructor
 	public KeyboardInputs(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
-
+	
 	// Override methods
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -32,9 +32,6 @@ public class KeyboardInputs implements KeyListener {
 			break;
 		case PLAYING:
 			gamePanel.getGame().getPlaying().keyPressed(e);
-			break;
-		case TUTORIAL:
-			gamePanel.getGame().getTutorial().keyPressed(e);
 			break;
 		default:
 			break;
@@ -49,9 +46,6 @@ public class KeyboardInputs implements KeyListener {
 			break;
 		case PLAYING:
 			gamePanel.getGame().getPlaying().keyReleased(e);
-			break;
-		case TUTORIAL:
-			gamePanel.getGame().getTutorial().keyReleased(e);
 			break;
 		default:
 			break;
