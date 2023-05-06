@@ -2,6 +2,13 @@ package utils;
 
 public class Constants {
 
+	public static class UI {
+		public static class Buttons {
+			public static final int B_WIDTH_DEFAULT = 140;
+			public static final int B_HEIGHT_DEFAULT = 56;
+		}
+	}
+
 	// Player Constants
 	public static class PlayerConstants {
 		public static final int IDLE = 0;

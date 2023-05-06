@@ -2,6 +2,7 @@ package gamestates;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import entities.Player;
 import levels.LevelHandler;
@@ -14,18 +15,18 @@ public class Playing extends State implements StateMethods {
 	// Instance Entities
 	private Player player;
 	private LevelHandler levelHandler;
-	
+
 	// Level Scrolling Attributes
 	private int yLevelOffset;
 	private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
 	private int levelTilesTall = LoadSave.GetLevelData().length;
 	private int minTilesOffset = Game.TILES_IN_HEIGHT - levelTilesTall;
 	private int minLevelOffsetY = minTilesOffset * Game.TILES_SIZE;
-	
+
 	// Game Over Attributes
 	private GameOverOverlay gameOverOverlay;
 	private boolean gameOver = false;
-	
+
 	// Constructor
 	public Playing(Game game) {
 		super(game);
@@ -61,11 +62,11 @@ public class Playing extends State implements StateMethods {
 	private void checkCloseToBorder() {
 		int playerY = (int) player.getHitbox().y;
 		int diff = playerY - yLevelOffset;
-		
+
 		if (diff < topBorder) {
 			yLevelOffset += diff - topBorder;
 		}
-		
+
 		if (yLevelOffset > 0) {
 			yLevelOffset = 0;
 		} else if (yLevelOffset < minLevelOffsetY) {
@@ -77,7 +78,7 @@ public class Playing extends State implements StateMethods {
 	public void draw(Graphics g) {
 		levelHandler.draw(g, yLevelOffset);
 		player.render(g, yLevelOffset);
-		
+
 		if (gameOver) {
 			gameOverOverlay.draw(g);
 		}
@@ -88,17 +89,17 @@ public class Playing extends State implements StateMethods {
 		player.resetAll();
 		yLevelOffset = 0;
 	}
-	
+
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
-	
+
 	public void checkIfWithinVisible() {
 		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
 			player.changeHealth(-3);
 		}
 	}
-	
+
 	// Input methods
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -142,6 +143,26 @@ public class Playing extends State implements StateMethods {
 				player.setJump(false);
 				break;
 			}
-		}	
-	} 
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
 }
