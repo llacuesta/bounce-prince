@@ -1,6 +1,9 @@
 package gamestates;
 
+import java.awt.event.MouseEvent;
+
 import main.Game;
+import ui.MenuButton;
 
 public class State {
 
@@ -15,5 +18,10 @@ public class State {
 	// Getters
 	public Game getGame() {
 		return this.game;
+	}
+
+	// Methods
+	public boolean isIn(MouseEvent e, MenuButton mb) {
+		return mb.getBounds().contains(e.getX(), e.getY());
 	}
 }
