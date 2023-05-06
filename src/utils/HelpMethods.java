@@ -14,21 +14,23 @@ public class HelpMethods {
 						return true;
 		return false;
 	}
-
-	// TODO: Bug here where the sprite is too tall to not detect collision
+	
+	// TODO: Bug here where the sprite is too tall to not detect collision 
 	// if a single tile goes right in between the top and bottom of the sprite
 	private static boolean IsSolid(float x, float y, int[][] levelData) {
+		int maxHeight = levelData.length * Game.TILES_SIZE;
+		
 		if (x < 0 || x >= Game.GAME_WIDTH) {
 			return true;
 		}
-		if (y < 0 || y >= Game.GAME_HEIGHT) {
+		if (y < Game.GAME_HEIGHT - maxHeight || y >= Game.GAME_HEIGHT) {
 			return true;
 		}
-
+		
 		float xIndex = x / Game.TILES_SIZE;
 		float yIndex = y / Game.TILES_SIZE;
-
-		int value = levelData[(int) yIndex][(int) xIndex];
+		
+		int value = levelData[(int) (yIndex + levelData.length - Game.TILES_IN_HEIGHT)][(int) xIndex];
 		if (value >= 96) value -= 96;
 		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 30, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
 			return true;
@@ -36,7 +38,7 @@ public class HelpMethods {
 			return false;
 		}
 	}
-
+	
 	public static float GetEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {
 		int currentTile = (int) (hitbox.x / Game.TILES_SIZE);
 		if (xSpeed > 0) {
@@ -49,7 +51,7 @@ public class HelpMethods {
 			return currentTile * Game.TILES_SIZE;
 		}
 	}
-
+	
 	public static float GetEntityYPosNextToHorizontalWall(Rectangle2D.Float hitbox, float airSpeed) {
 		int currentTile = (int) Math.round(hitbox.y / Game.TILES_SIZE);
 		if (airSpeed > 0) {
@@ -66,7 +68,7 @@ public class HelpMethods {
 			return currentTile * Game.TILES_SIZE;
 		}
 	}
-
+	
 	public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] levelData) {
 		if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData)) {
 			if (!IsSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, levelData)) {

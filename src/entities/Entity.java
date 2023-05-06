@@ -19,6 +19,7 @@ public abstract class Entity {
 		this.height = height;
 	}
 	
+	// TODO: Change width and height to int
 	protected void initHitbox(float x, float y, float width, float height) {
 		this.hitbox = new Rectangle2D.Float(x, y, width, height);
 	}
