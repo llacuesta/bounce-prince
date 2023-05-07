@@ -14,7 +14,7 @@ public class Player extends Entity {
 	
 	// Animation Attributes
 	private BufferedImage[][] animations;
-	private int animTick, animIndex, animSpeed = 20;
+	private int animTick, animIndex, animSpeed = 17;
 	private int playerAction = IDLE;
 	private int flipX = 0;
 	private int flipW = 1;
@@ -22,7 +22,7 @@ public class Player extends Entity {
 	// Movement Attributes
 	private boolean left, up, right, down, jump;
 	private boolean moving = false;
-	private float playerSpeed = 0.6f * Game.TILE_SCALE;
+	private float playerSpeed = 0.5f * Game.TILE_SCALE;
 	
 	// Level Data
 	private int[][] levelData;
@@ -34,7 +34,7 @@ public class Player extends Entity {
 	// Gravity Attributes
 	private float airSpeed = 0f;
 	private float gravity = 0.04f * Game.TILE_SCALE;
-	private float jumpSpeed = -1.70f * Game.TILE_SCALE;
+	private float jumpSpeed = -1.65f * Game.TILE_SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.PLAYER_SCALE;
 	private boolean inAir = false;
 	
@@ -64,12 +64,17 @@ public class Player extends Entity {
 		super(x, y, width, height);
 		this.playing = playing;
 		loadAnimations();
+		loadLives();
 		// TODO: Change width and height to int
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
 	}
 	
 	// Update Methods
 	public void update() {
+		if (playing.checkCrownTouched()) {
+			playing.setGameWin(true);
+			return;
+		}
 		updateHealthBar();
 		if (currentHealth <= 0) {
 			playing.setGameOver(true);
@@ -101,7 +106,6 @@ public class Player extends Entity {
 
 		if (currentHealth <= 0) {
 			currentHealth = 0;
-			// TODO: Implement game over
 		} else if (currentHealth >= maxHealth) {
 			currentHealth = maxHealth;
 		}
@@ -214,10 +218,13 @@ public class Player extends Entity {
 	}
 
 	// Misc Methods
-	private void loadAnimations() {
-		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
+	private void loadLives() {
 		emptyLivesBar = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_HEALTH_BAR);
 		fullLivesBar = LoadSave.GetSpriteAtlas(LoadSave.FULL_HEALTH_BAR);
+	}
+
+	private void loadAnimations() {
+		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
 		// Player animations
 		animations = new BufferedImage[5][8];

@@ -4,10 +4,12 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import entities.Crown;
 import entities.Player;
 import levels.LevelHandler;
 import main.Game;
 import ui.GameOverOverlay;
+import ui.LevelCompleteOverlay;
 import utils.LoadSave;
 
 public class Playing extends State implements StateMethods {
@@ -15,17 +17,20 @@ public class Playing extends State implements StateMethods {
 	// Instance Entities
 	private Player player;
 	private LevelHandler levelHandler;
+	private Crown crown;
 
 	// Level Scrolling Attributes
-	private int yLevelOffset;
+	private int yLevelOffset = 0;
 	private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
 	private int levelTilesTall = LoadSave.GetLevelData().length;
 	private int minTilesOffset = Game.TILES_IN_HEIGHT - levelTilesTall;
 	private int minLevelOffsetY = minTilesOffset * Game.TILES_SIZE;
 
-	// Game Over Attributes
+	// Overlays Attributes
 	private GameOverOverlay gameOverOverlay;
+	private LevelCompleteOverlay levelCompleteOverlay;
 	private boolean gameOver = false;
+	private boolean gameWin = false;
 
 	// Constructor
 	public Playing(Game game) {
@@ -38,7 +43,10 @@ public class Playing extends State implements StateMethods {
 		levelHandler = new LevelHandler(game);
 		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), this);
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
+		crown = LoadSave.GenerateCrown();
+
 		gameOverOverlay = new GameOverOverlay(this);
+		levelCompleteOverlay = new LevelCompleteOverlay(this);
 	}
 	
 	// Misc Methods
@@ -52,11 +60,16 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void update() {
-		if (!gameOver) {
+		if (!gameOver && !gameWin) {
 			levelHandler.update();
 			player.update();
+			crown.update();
 			checkCloseToBorder();
 		}
+	}
+
+	public boolean checkCrownTouched() {
+		return player.getHitbox().intersects(crown.getHitbox());
 	}
 
 	private void checkCloseToBorder() {
@@ -78,20 +91,28 @@ public class Playing extends State implements StateMethods {
 	public void draw(Graphics g) {
 		levelHandler.draw(g, yLevelOffset);
 		player.render(g, yLevelOffset);
+		crown.render(g, yLevelOffset);
 
 		if (gameOver) {
 			gameOverOverlay.draw(g);
+		} else if (gameWin) {
+			levelCompleteOverlay.draw(g);
 		}
 	}
 
 	public void resetAll() {
 		gameOver = false;
+		gameWin = false;
 		player.resetAll();
 		yLevelOffset = 0;
 	}
 
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+
+	public void setGameWin(boolean gameWin) {
+		this.gameWin = gameWin;
 	}
 
 	public void checkIfWithinVisible() {
@@ -105,6 +126,8 @@ public class Playing extends State implements StateMethods {
 	public void keyPressed(KeyEvent e) {
 		if (gameOver) {
 			gameOverOverlay.keyPressed(e);
+		} else if (gameWin) {
+			levelCompleteOverlay.keyPressed(e);
 		} else {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_W:
@@ -128,7 +151,7 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (!gameOver) {
+		if (!gameOver && !gameWin) {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_W:
 				player.setJump(false);

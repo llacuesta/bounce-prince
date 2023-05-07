@@ -1,5 +1,7 @@
 package utils;
 
+import main.Game;
+
 public class Constants {
 
 	public static class UI {
@@ -28,13 +30,15 @@ public class Constants {
 			}
 		}
 	}
-	
-	// Directions
-	public static class Directions {
-		public static final int LEFT = 0;
-		public static final int UP = 1;
-		public static final int RIGHT = 2;
-		public static final int DOWN = 3;
+
+	// Crown Constants
+	public static class CrownConstants {
+		public static final int IDLE_AMOUNT = 8;
+
+		public static final int CROWN_WIDTH_DEFAULT = 24;
+		public static final int CROWN_HEIGHT_DEFAULT = 16;
+		public static final int CROWN_WIDTH = (int) (CROWN_WIDTH_DEFAULT * 3);
+		public static final int CROWN_HEIGHT = (int) (CROWN_HEIGHT_DEFAULT * 3);
 	}
 	
 }
