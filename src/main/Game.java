@@ -20,7 +20,7 @@ public class Game implements Runnable {
 	public final static float PLAYER_SCALE = 2.0f;
 	public final static int TILES_IN_WIDTH = 30;
 	public final static int TILES_IN_HEIGHT = 25;
-	public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE * TILE_SCALE);
+	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * TILE_SCALE);
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 	
@@ -92,7 +92,6 @@ public class Game implements Runnable {
 			// Frame counter
 			if (System.currentTimeMillis() - lastCheck >= 1000) {
 				lastCheck = System.currentTimeMillis();
-				System.out.println("FPS: " + frames + " || UPS: " + updates);
 				frames = 0;
 				updates = 0;
 			}

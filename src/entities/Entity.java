@@ -23,18 +23,17 @@ public abstract class Entity {
 	protected void initHitbox(float x, float y, float width, float height) {
 		this.hitbox = new Rectangle2D.Float(x, y, width, height);
 	}
+
+	protected  void setHitbox(float x, float y) {
+		this.hitbox.x = x;
+		this.hitbox.y = y;
+	}
 	
 	protected void drawHitbox(Graphics g) {
 		// For debugging purposes only
 		g.setColor(Color.PINK);
-		g.setColor(Color.PINK);
 		g.drawRect((int) this.hitbox.x, (int) this.hitbox.y, (int) this.hitbox.width, (int) this.hitbox.height);
 	}
-	
-//	protected void updateHitbox() {
-//		this.hitbox.x = (int) x;
-//		this.hitbox.y = (int) y;
-//	}
 	
 	public Rectangle2D.Float getHitbox() {
 		return this.hitbox;

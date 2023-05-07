@@ -1,5 +1,8 @@
 package utils;
 
+import entities.Crown;
+import main.Game;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,11 +18,14 @@ public class LoadSave {
 	public static final String MENU_BACKGROUND = "menu_background.png";
 	public static final String EMPTY_HEALTH_BAR = "hearts_empty.png";
 	public static final String FULL_HEALTH_BAR = "hearts_full.png";
+	public static final String DEATH_SCREEN = "dead_screen.png";
+	public static final String CROWN_ATLAS = "crown_sprites.png";
+	public static final String WIN_SCREEN = "win_screen.png";
 
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
 		InputStream is = LoadSave.class.getResourceAsStream("/assets/" + fileName);
-		
+
 		try {
 			img = ImageIO.read(is);
 		} catch (IOException e) {
@@ -31,8 +37,24 @@ public class LoadSave {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return img;
+	}
+
+	public static Crown GenerateCrown() {
+		BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
+		Crown crown = new Crown(0, 0);;
+
+		for (int j = 0; j < img.getHeight(); j++) {
+			for (int i = 0; i < img.getWidth(); i++) {
+				Color color = new Color(img.getRGB(i, j));
+				int value = color.getGreen();
+				if (value == 1) {
+					crown = new Crown(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+				}
+			}
+		}
+		return crown;
 	}
 	
 	public static int[][] GetLevelData() {
