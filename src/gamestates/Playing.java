@@ -8,8 +8,10 @@ import entities.Crown;
 import entities.Player;
 import levels.LevelHandler;
 import main.Game;
+import ui.CountdownOverlay;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
+import ui.TimerOverlay;
 import utils.LoadSave;
 
 public class Playing extends State implements StateMethods {
@@ -29,6 +31,10 @@ public class Playing extends State implements StateMethods {
 	// Overlays Attributes
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompleteOverlay levelCompleteOverlay;
+	private TimerOverlay timerOverlay;
+	private CountdownOverlay countdownOverlay;
+	private boolean timerStart = false;
+	private boolean countdownStart = false;
 	private boolean gameOver = false;
 	private boolean gameWin = false;
 
@@ -40,24 +46,20 @@ public class Playing extends State implements StateMethods {
 	
 	// Init Method
 	private void initClasses() {
+		// Initiating Level and Entities
 		levelHandler = new LevelHandler(game);
 		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), this);
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 		crown = LoadSave.GenerateCrown();
 
+		// Initiating Overlays
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
-	}
-	
-	// Misc Methods
-	public Player getPlayer() {
-		return player;
+		timerOverlay = new TimerOverlay(this);
+		countdownOverlay = new CountdownOverlay();
 	}
 
-	public void windowFocusLost() {
-		player.resetDirBooleans();
-	}
-
+	// Update Methods
 	@Override
 	public void update() {
 		if (!gameOver && !gameWin) {
@@ -65,6 +67,19 @@ public class Playing extends State implements StateMethods {
 			player.update();
 			crown.update();
 			checkCloseToBorder();
+
+			if (!countdownStart) {
+				countdownOverlay.update();
+				countdownStart = true;
+			}
+
+			if (countdownOverlay.getCount() == 0) {
+				if (!timerStart) {
+					timerOverlay.startTime();
+					timerStart = true;
+				}
+				timerOverlay.update();
+			}
 		}
 	}
 
@@ -87,11 +102,22 @@ public class Playing extends State implements StateMethods {
 		}
 	}
 
+	public void checkIfWithinVisible() {
+		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
+			player.changeHealth(-3);
+		}
+	}
+
+	// Render Methods
 	@Override
 	public void draw(Graphics g) {
 		levelHandler.draw(g, yLevelOffset);
 		player.render(g, yLevelOffset);
 		crown.render(g, yLevelOffset);
+		countdownOverlay.draw(g);
+		if (countdownOverlay.getCount() == 0) {
+			timerOverlay.draw(g);
+		}
 
 		if (gameOver) {
 			gameOverOverlay.draw(g);
@@ -99,8 +125,24 @@ public class Playing extends State implements StateMethods {
 			levelCompleteOverlay.draw(g);
 		}
 	}
+	
+	// Misc Methods
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void windowFocusLost() {
+		player.resetDirBooleans();
+	}
 
 	public void resetAll() {
+		// Resetting timers
+		timerStart = false;
+		countdownStart = false;
+		timerOverlay = new TimerOverlay(this);
+		countdownOverlay = new CountdownOverlay();
+
+		// Resetting win/lose conditions
 		gameOver = false;
 		gameWin = false;
 		player.resetAll();
@@ -115,12 +157,6 @@ public class Playing extends State implements StateMethods {
 		this.gameWin = gameWin;
 	}
 
-	public void checkIfWithinVisible() {
-		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
-			player.changeHealth(-3);
-		}
-	}
-
 	// Input methods
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -129,22 +165,21 @@ public class Playing extends State implements StateMethods {
 		} else if (gameWin) {
 			levelCompleteOverlay.keyPressed(e);
 		} else {
-			switch(e.getKeyCode()) {
-			case KeyEvent.VK_W:
-				player.setJump(true);
-				break;
-			case KeyEvent.VK_A:
-				player.setLeft(true);
-				break;
-			case KeyEvent.VK_D:
-				player.setRight(true);
-				break;
-			case KeyEvent.VK_SPACE:
-				player.setJump(true);
-				break;
-			case KeyEvent.VK_ESCAPE:
-				Gamestate.state = Gamestate.MENU;
-				break;
+			if (countdownOverlay.getCount() == 0) {
+				switch(e.getKeyCode()) {
+					case KeyEvent.VK_W, KeyEvent.VK_SPACE:
+						player.setJump(true);
+						break;
+					case KeyEvent.VK_A:
+						player.setLeft(true);
+						break;
+					case KeyEvent.VK_D:
+						player.setRight(true);
+						break;
+					case KeyEvent.VK_ESCAPE:
+						Gamestate.state = Gamestate.MENU;
+						break;
+				}
 			}
 		}
 	}
@@ -153,7 +188,7 @@ public class Playing extends State implements StateMethods {
 	public void keyReleased(KeyEvent e) {
 		if (!gameOver && !gameWin) {
 			switch(e.getKeyCode()) {
-			case KeyEvent.VK_W:
+			case KeyEvent.VK_W, KeyEvent.VK_SPACE:
 				player.setJump(false);
 				break;
 			case KeyEvent.VK_A:
@@ -161,9 +196,6 @@ public class Playing extends State implements StateMethods {
 				break;
 			case KeyEvent.VK_D:
 				player.setRight(false);
-				break;
-			case KeyEvent.VK_SPACE:
-				player.setJump(false);
 				break;
 			}
 		}

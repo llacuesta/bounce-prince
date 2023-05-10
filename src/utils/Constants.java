@@ -1,7 +1,5 @@
 package utils;
 
-import main.Game;
-
 public class Constants {
 
 	public static class UI {
@@ -39,6 +37,14 @@ public class Constants {
 		public static final int CROWN_HEIGHT_DEFAULT = 16;
 		public static final int CROWN_WIDTH = (int) (CROWN_WIDTH_DEFAULT * 3);
 		public static final int CROWN_HEIGHT = (int) (CROWN_HEIGHT_DEFAULT * 3);
+	}
+
+	// Countdown Constants
+	public static class CountdownConstants {
+		public static final int COUNTDOWN_WIDTH_DEFAULT = 32;
+		public static final int COUNTDOWN_HEIGHT_DEFAULT = 32;
+		public static final int COUNTDOWN_WIDTH = (int) (COUNTDOWN_WIDTH_DEFAULT * 1.5);
+		public static final int COUNTDOWN_HEIGHT = (int) (COUNTDOWN_HEIGHT_DEFAULT * 1.5);
 	}
 	
 }
