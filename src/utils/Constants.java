@@ -2,6 +2,12 @@ package utils;
 
 public class Constants {
 
+	public static class UI {
+		public static class URMButtons {
+			public static final int URM_DEFAULT_SIZE = 56;
+		}
+	}
+
 	// Player Constants
 	public static class PlayerConstants {
 		public static final int IDLE = 0;

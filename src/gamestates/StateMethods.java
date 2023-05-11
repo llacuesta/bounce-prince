@@ -3,6 +3,7 @@ package gamestates;
 // Imports
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public interface StateMethods {
 
@@ -13,4 +14,10 @@ public interface StateMethods {
 	// Key Methods
 	public void keyPressed(KeyEvent e);
 	public void keyReleased(KeyEvent e);
+
+	// MouseEvent
+	public void mouseClicked(MouseEvent e);
+	public void mousePressed(MouseEvent e);
+	public void mouseReleased(MouseEvent e);
+	public void mouseMoved(MouseEvent e);
 }

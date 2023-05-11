@@ -2,12 +2,14 @@ package gamestates;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import entities.Countdown;
 import entities.Player;
 import entities.Timer;
 import levels.LevelHandler;
 import main.Game;
+import ui.PauseOverlay;
 
 public class Playing extends State implements StateMethods {
 
@@ -16,7 +18,8 @@ public class Playing extends State implements StateMethods {
 	private LevelHandler levelHandler;
 	private Countdown countdown;
 	private Timer timer;
-	private boolean exitted;
+	private PauseOverlay pauseOverlay;
+	private boolean exitted, paused = false;
 
 	// Constructor
 	public Playing(Game game) {
@@ -32,6 +35,7 @@ public class Playing extends State implements StateMethods {
 		countdown = new Countdown(145, 215, (int) (20 * Game.COUNT_SCALE), (int) (37 * Game.COUNT_SCALE));
 		timer = new Timer(20,50,0,0);
 		exitted = false;
+		pauseOverlay = new PauseOverlay(this);
 	}
 
 	// Misc Methods
@@ -49,8 +53,12 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void update() {
-		levelHandler.update();
-		player.update();
+		if (!paused) {
+			levelHandler.update();
+			player.update();
+		} else {
+			pauseOverlay.update();
+		}
 	}
 
 	@Override
@@ -63,6 +71,9 @@ public class Playing extends State implements StateMethods {
 		levelHandler.draw(g);
 		player.render(g);
 		countdown.render(g, timer);
+
+		if (paused)
+			pauseOverlay.draw(g);
 
 		if(countdown.getCount() <= 0)
 			timer.draw(g);
@@ -85,9 +96,7 @@ public class Playing extends State implements StateMethods {
 				player.setJump(true);
 				break;
 			case KeyEvent.VK_ESCAPE:
-				Gamestate.state = Gamestate.MENU;
-				timer.saveTime();
-				exitted = true;
+				paused = !paused;
 				break;
 			default:
 				break;
@@ -111,5 +120,32 @@ public class Playing extends State implements StateMethods {
 			player.setJump(false);
 			break;
 		}
+	}
+
+	public void unpauseGame() {
+		paused = false;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (paused)
+			pauseOverlay.mousePressed(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (paused)
+			pauseOverlay.mouseReleased(e);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (paused)
+			pauseOverlay.mouseMoved(e);
 	}
 }
