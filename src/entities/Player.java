@@ -250,36 +250,16 @@ public class Player extends Entity {
 	}
 
 	// Setters and Getters
-	public boolean isLeft() {
-		return left;
-	}
-
 	public void setLeft(boolean left) {
 		this.left = left;
-	}
-
-	public boolean isUp() {
-		return up;
 	}
 
 	public void setUp(boolean up) {
 		this.up = up;
 	}
 
-	public boolean isRight() {
-		return right;
-	}
-
 	public void setRight(boolean right) {
 		this.right = right;
-	}
-
-	public boolean isDown() {
-		return down;
-	}
-
-	public void setDown(boolean down) {
-		this.down = down;
 	}
 
 	public void setJump(boolean jump) {
@@ -291,6 +271,7 @@ public class Player extends Entity {
 		this.up = false;
 		this.right = false;
 		this.down = false;
+		this.jump = false;
 	}
 
 	public void resetAll() {
