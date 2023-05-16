@@ -1,5 +1,7 @@
 package utils;
 
+import main.Game;
+
 public class Constants {
 
 	public static class UI {
@@ -19,8 +21,7 @@ public class Constants {
 		
 		public static int GetSpriteAmount(int player_action) {
 			switch(player_action) {
-				case 0: return 4;
-				case 1: return 4;
+				case 0, 1: return 4;
 				case 2: return 6;
 				case 3: return 8;
 				case 4: return 2;
@@ -46,5 +47,12 @@ public class Constants {
 		public static final int COUNTDOWN_WIDTH = (int) (COUNTDOWN_WIDTH_DEFAULT * 1.5);
 		public static final int COUNTDOWN_HEIGHT = (int) (COUNTDOWN_HEIGHT_DEFAULT * 1.5);
 	}
-	
+
+	// Indicator Constants
+	public static class IndicatorConstants {
+		public static final int INDICATOR_WIDTH_DEFAULT = 32;
+		public static final int INDICATOR_HEIGHT_DEFAULT = 32;
+		public static final int INDICATOR_WIDTH = (int) (INDICATOR_WIDTH_DEFAULT * Game.PLAYER_SCALE);
+		public static final int INDICATOR_HEIGHT = (int) (INDICATOR_HEIGHT_DEFAULT * Game.PLAYER_SCALE);
+	}
 }

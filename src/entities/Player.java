@@ -1,12 +1,14 @@
 package entities;
 
 // Imports
-import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.Constants.PlayerConstants.*;
+import static utils.Constants.IndicatorConstants.*;
 import static utils.HelpMethods.*;
 import java.awt.image.BufferedImage;
 import main.Game;
 import java.awt.Graphics;
+
+import org.snakeyaml.engine.v2.api.Load;
 import utils.LoadSave;
 import gamestates.Playing;
 
@@ -58,11 +60,13 @@ public class Player extends Entity {
 	
 	// Others
 	private Playing playing;
+	private int playerNum;
 
 	// Constructor
-	public Player(float x, float y, int width, int height, Playing playing) {
+	public Player(float x, float y, int width, int height, int playerNum, Playing playing) {
 		super(x, y, width, height);
 		this.playing = playing;
+		this.playerNum = playerNum;
 		loadAnimations();
 		loadLives();
 		// TODO: Change width and height to int
@@ -214,7 +218,8 @@ public class Player extends Entity {
 	public void render(Graphics g, int levelOffset) {
 		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset) - levelOffset, width * flipW, height, null); 
 		drawUI(g);
-		// drawHitbox(g);
+		drawPlayerIndicator(g, levelOffset);
+		//drawHitbox(g);
 	}
 
 	// Misc Methods
@@ -224,7 +229,12 @@ public class Player extends Entity {
 	}
 
 	private void loadAnimations() {
-		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
+		// Change skin according to playerNum
+		BufferedImage img;
+		if (playerNum == 1) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_1_ATLAS);
+		else if (playerNum == 2) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_2_ATLAS);
+		else if (playerNum == 3) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_3_ATLAS);
+		else img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_1_ATLAS);
 
 		// Player animations
 		animations = new BufferedImage[5][8];
@@ -234,7 +244,12 @@ public class Player extends Entity {
 			}
 		}
 	}
-	
+
+	private void drawPlayerIndicator(Graphics g, int levelOffset) {
+		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_INDICATORS);
+		g.drawImage(img.getSubimage((this.playerNum - 1) * INDICATOR_WIDTH_DEFAULT, 0, INDICATOR_WIDTH_DEFAULT, INDICATOR_HEIGHT_DEFAULT), (int) this.hitbox.x - 20, (int) (this.hitbox.y - levelOffset) - 74, INDICATOR_WIDTH, INDICATOR_HEIGHT, null);
+	}
+
 	private void drawUI(Graphics g) {
 		g.drawImage(emptyLivesBar, emptyLivesBarX, emptyLivesBarY, emptyLivesBarWidth, emptyLivesHeight, null);
 		if (currentHealth != 0) {

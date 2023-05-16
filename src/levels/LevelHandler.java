@@ -23,7 +23,7 @@ public class LevelHandler {
 	
 	private void importLevelTiles() {
 		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
-		levelSprite = new BufferedImage[96];
+		levelSprite = new BufferedImage[112];
 		for (int j = 0; j < 12; j++) {
 			for (int i = 0; i < 8; i++) {
 				int index = j * 8 + i;
@@ -46,8 +46,8 @@ public class LevelHandler {
 		for (int j = 0; j < maxHeight; j++) {
 			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
 				int index = levelOne.getSpriteIndex(i, j);
-				if (index >= 96) {
-					g.drawImage(levelSprite[index - 96], i*Game.TILES_SIZE + Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT))*Game.TILES_SIZE - levelOffset, -Game.TILES_SIZE, Game.TILES_SIZE, null);
+				if (index >= 93) {
+					g.drawImage(levelSprite[index - 93], i*Game.TILES_SIZE + Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT))*Game.TILES_SIZE - levelOffset, -Game.TILES_SIZE, Game.TILES_SIZE, null);
 				} else {
 					g.drawImage(levelSprite[index], i*Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT))*Game.TILES_SIZE - levelOffset, Game.TILES_SIZE, Game.TILES_SIZE, null);
 				}

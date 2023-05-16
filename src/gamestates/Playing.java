@@ -48,7 +48,7 @@ public class Playing extends State implements StateMethods {
 	private void initClasses() {
 		// Initiating Level and Entities
 		levelHandler = new LevelHandler(game);
-		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), this);
+		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), 3,this);
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 		crown = LoadSave.GenerateCrown();
 
