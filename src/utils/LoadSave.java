@@ -28,8 +28,9 @@ public class LoadSave {
 	public static final String COUNTDOWN_BG = "countdown_background.png";
 	public static final String COUNTDOWN = "countdown.png";
 	public static final String FONT = "bombardier_font.ttf";
-	public static final String BACKGROUND = "background.png";
+	public static final String BACKGROUND = "background.gif";
 	public static final String PLAYER_INDICATORS = "player_indicators.png";
+	public static final String TITLE = "title_logo.png";
 
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

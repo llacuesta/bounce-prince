@@ -103,7 +103,7 @@ public class Playing extends State implements StateMethods {
 	}
 
 	public void checkIfWithinVisible() {
-		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
+		if (player.getHitbox().y + (player.getHeight() / 2) > Game.GAME_HEIGHT + yLevelOffset) {
 			player.changeHealth(-3);
 		}
 	}
@@ -129,10 +129,6 @@ public class Playing extends State implements StateMethods {
 	// Misc Methods
 	public Player getPlayer() {
 		return player;
-	}
-
-	public void windowFocusLost() {
-		player.resetDirBooleans();
 	}
 
 	public void resetAll() {
@@ -203,21 +199,17 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 }

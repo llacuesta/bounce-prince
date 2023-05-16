@@ -2,10 +2,8 @@ package entities;
 
 // Imports
 import static utils.Constants.CrownConstants.*;
-import gamestates.Playing;
 import main.Game;
 import utils.LoadSave;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -13,10 +11,9 @@ public class Crown extends Entity {
 
     // Animation Attributes
     private BufferedImage[] animation;
-    private int animIndex, animTick, animSpeed = 20;
+    private int animSpeed = 20;
 
     // Others
-    private Playing pLaying;
     private int maxHeight = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ONE_DATA).getHeight();
 
     // Constructor

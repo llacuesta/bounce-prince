@@ -3,12 +3,12 @@ package entities;
 // Imports
 import static utils.Constants.PlayerConstants.*;
 import static utils.Constants.IndicatorConstants.*;
+import static utils.Constants.GameConstants.*;
+import static utils.Constants.LivesConstants.*;
 import static utils.HelpMethods.*;
 import java.awt.image.BufferedImage;
 import main.Game;
 import java.awt.Graphics;
-
-import org.snakeyaml.engine.v2.api.Load;
 import utils.LoadSave;
 import gamestates.Playing;
 
@@ -16,51 +16,34 @@ public class Player extends Entity {
 	
 	// Animation Attributes
 	private BufferedImage[][] animations;
-	private int animTick, animIndex, animSpeed = 17;
+	private int animSpeed = 17;
 	private int playerAction = IDLE;
 	private int flipX = 0;
 	private int flipW = 1;
 	
 	// Movement Attributes
-	private boolean left, up, right, down, jump;
+	private boolean left, right, jump;
 	private boolean moving = false;
 	private float playerSpeed = 0.5f * Game.TILE_SCALE;
 	
 	// Level Data
 	private int[][] levelData;
 	
-	// Hitbox Attributes
-	private float xDrawOffset = 19 * Game.PLAYER_SCALE;
-	private float yDrawOffset = 6 * Game.PLAYER_SCALE;
-	
 	// Gravity Attributes
 	private float airSpeed = 0f;
-	private float gravity = 0.04f * Game.TILE_SCALE;
-	private float jumpSpeed = -1.65f * Game.TILE_SCALE;
-	private float fallSpeedAfterCollision = 0.5f * Game.PLAYER_SCALE;
 	private boolean inAir = false;
 	
 	// Lives Attributes
 	private BufferedImage emptyLivesBar;
 	private BufferedImage fullLivesBar;
-
-	private int emptyLivesBarWidth = (int) (24 * Game.TILE_SCALE);
-	private int emptyLivesHeight = (int) (8 * Game.TILE_SCALE);
-	private int emptyLivesBarX = (int) (Game.GAME_WIDTH - (emptyLivesBarWidth + (10 * Game.TILE_SCALE)));
-	private int emptyLivesBarY = (int) (10 * Game.TILE_SCALE);
-
-	private int fullLivesBarWidth = (int) (24 * Game.TILE_SCALE);
-	private int fullLivesBarHeight = (int) (8 * Game.TILE_SCALE);
-	private int fullLivesBarX = (int) (Game.GAME_WIDTH - (fullLivesBarWidth + (10 * Game.TILE_SCALE)));
-	private int fullLivesBarY = (int) (10 * Game.TILE_SCALE);
 	
 	private int maxHealth = 3;
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
 	
 	// Others
-	private Playing playing;
-	private int playerNum;
+	private final Playing playing;
+	private final int playerNum;
 
 	// Constructor
 	public Player(float x, float y, int width, int height, int playerNum, Playing playing) {
@@ -69,7 +52,6 @@ public class Player extends Entity {
 		this.playerNum = playerNum;
 		loadAnimations();
 		loadLives();
-		// TODO: Change width and height to int
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
 	}
 	
@@ -91,7 +73,7 @@ public class Player extends Entity {
 	
 	private void updateHealthBar() {
 		playing.checkIfWithinVisible();
-		livesBarWidth = fullLivesBarWidth - (int) ((currentHealth / (float) maxHealth) * fullLivesBarWidth);
+		livesBarWidth = FULL_LIVES_BAR_WIDTH - (int) ((currentHealth / (float) maxHealth) * FULL_LIVES_BAR_WIDTH);
 	}
 
 	private void updateAnimationTick() {
@@ -175,14 +157,14 @@ public class Player extends Entity {
 		if (inAir) {
 			if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
 				hitbox.y += airSpeed;
-				airSpeed += gravity;
+				airSpeed += GRAVITY;
 				updateXPos(xSpeed);
 			} else {
 				hitbox.y = GetEntityYPosNextToHorizontalWall(hitbox, airSpeed);
 				if (airSpeed > 0) {
 					resetInAir();
 				} else {
-					airSpeed = fallSpeedAfterCollision;
+					airSpeed = FALL_SPEED_AFTER_COLLISION;
 				}
 				updateXPos(xSpeed);
 			}
@@ -211,12 +193,12 @@ public class Player extends Entity {
 		}
 		
 		inAir = true;
-		airSpeed = jumpSpeed;
+		airSpeed = JUMP_SPEED;
 	}
  	
 	// Render Methods
 	public void render(Graphics g, int levelOffset) {
-		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset) - levelOffset, width * flipW, height, null); 
+		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - X_DRAW_OFFSET) + flipX, (int) (hitbox.y - Y_DRAW_OFFSET) - levelOffset, width * flipW, height, null);
 		drawUI(g);
 		drawPlayerIndicator(g, levelOffset);
 		//drawHitbox(g);
@@ -234,7 +216,7 @@ public class Player extends Entity {
 		if (playerNum == 1) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_1_ATLAS);
 		else if (playerNum == 2) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_2_ATLAS);
 		else if (playerNum == 3) img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_3_ATLAS);
-		else img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_1_ATLAS);
+		else img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_4_ATLAS);
 
 		// Player animations
 		animations = new BufferedImage[5][8];
@@ -251,9 +233,9 @@ public class Player extends Entity {
 	}
 
 	private void drawUI(Graphics g) {
-		g.drawImage(emptyLivesBar, emptyLivesBarX, emptyLivesBarY, emptyLivesBarWidth, emptyLivesHeight, null);
+		g.drawImage(emptyLivesBar, EMPTY_LIVES_BAR_X, EMPTY_LIVES_BAR_Y, EMPTY_LIVES_BAR_WIDTH, EMPTY_LIVES_BAR_HEIGHT, null);
 		if (currentHealth != 0) {
-			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), fullLivesBarX, fullLivesBarY, fullLivesBarWidth - livesBarWidth, fullLivesBarHeight, null);
+			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), FULL_LIVES_BAR_X, FULL_LIVES_BAR_Y, FULL_LIVES_BAR_WIDTH - livesBarWidth, FULL_LIVES_BAR_HEIGHT, null);
 		}
 	}
 	
@@ -269,10 +251,6 @@ public class Player extends Entity {
 		this.left = left;
 	}
 
-	public void setUp(boolean up) {
-		this.up = up;
-	}
-
 	public void setRight(boolean right) {
 		this.right = right;
 	}
@@ -283,9 +261,7 @@ public class Player extends Entity {
 
 	public void resetDirBooleans() {
 		this.left = false;
-		this.up = false;
 		this.right = false;
-		this.down = false;
 		this.jump = false;
 	}
 
