@@ -113,5 +113,4 @@ public class Menu extends State implements StateMethods {
 				break;
 			}
 	}
-
 }

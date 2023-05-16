@@ -1,6 +1,10 @@
 package utils;
 
+import entities.Crown;
 import main.Game;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.awt.geom.Rectangle2D;
 

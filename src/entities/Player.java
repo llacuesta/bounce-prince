@@ -42,13 +42,11 @@ public class Player extends Entity {
 	private int livesBarWidth = 0;
 	
 	// Others
-	private final Playing playing;
 	private final int playerNum;
 
 	// Constructor
-	public Player(float x, float y, int width, int height, int playerNum, Playing playing) {
+	public Player(float x, float y, int width, int height, int playerNum) {
 		super(x, y, width, height);
-		this.playing = playing;
 		this.playerNum = playerNum;
 		loadAnimations();
 		loadLives();
@@ -57,22 +55,13 @@ public class Player extends Entity {
 	
 	// Update Methods
 	public void update() {
-		if (playing.checkCrownTouched()) {
-			playing.setGameWin(true);
-			return;
-		}
 		updateHealthBar();
-		if (currentHealth <= 0) {
-			playing.setGameOver(true);
-			return;
-		}
 		updatePos();
 		updateAnimationTick();
 		setAnimation();
 	}
 	
 	private void updateHealthBar() {
-		playing.checkIfWithinVisible();
 		livesBarWidth = FULL_LIVES_BAR_WIDTH - (int) ((currentHealth / (float) maxHealth) * FULL_LIVES_BAR_WIDTH);
 	}
 
@@ -244,6 +233,10 @@ public class Player extends Entity {
 		if (!IsEntityOnFloor(hitbox, levelData)) {
 			inAir = true;
 		}
+	}
+
+	public int getPlayerHealth() {
+		return currentHealth;
 	}
 
 	// Setters and Getters
