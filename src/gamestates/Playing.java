@@ -40,7 +40,7 @@ public class Playing extends State implements StateMethods {
 		initClasses();
 		calculateOffset();
 	}
-	
+
 	// Init Method
 	private void initClasses() {
 		// Initiating Level and Entities
@@ -131,7 +131,7 @@ public class Playing extends State implements StateMethods {
 			levelCompleteOverlay.draw(g);
 		}
 	}
-	
+
 	// Misc Methods
 	public Player getPlayer() {
 		return player;
@@ -173,7 +173,8 @@ public class Playing extends State implements StateMethods {
 		} else {
 			if (countdownOverlay.getCount() == 0) {
 				switch(e.getKeyCode()) {
-					case KeyEvent.VK_W, KeyEvent.VK_SPACE:
+					case KeyEvent.VK_W:
+					case KeyEvent.VK_SPACE:
 						player.setJump(true);
 						break;
 					case KeyEvent.VK_A:
@@ -191,7 +192,8 @@ public class Playing extends State implements StateMethods {
 	public void keyReleased(KeyEvent e) {
 		if (!gameOver && !gameWin) {
 			switch(e.getKeyCode()) {
-			case KeyEvent.VK_W, KeyEvent.VK_SPACE:
+			case KeyEvent.VK_W:
+			case KeyEvent.VK_SPACE:
 				player.setJump(false);
 				break;
 			case KeyEvent.VK_A:

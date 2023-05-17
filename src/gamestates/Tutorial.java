@@ -46,7 +46,8 @@ public class Tutorial extends State implements StateMethods {
     @Override
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_SPACE:
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_SPACE:
                 player.setJump(true);
                 break;
             case KeyEvent.VK_A:
@@ -64,7 +65,8 @@ public class Tutorial extends State implements StateMethods {
     @Override
     public void keyReleased(KeyEvent e) {
         switch(e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_SPACE:
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_SPACE:
                 player.setJump(false);
                 break;
             case KeyEvent.VK_A:

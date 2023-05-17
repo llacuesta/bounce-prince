@@ -30,10 +30,11 @@ public class Constants {
 		public static final int RUN = 2;
 		public static final int JUMP = 3;
 		public static final int FALL = 4;
-		
+
 		public static int GetSpriteAmount(int player_action) {
 			switch(player_action) {
-				case 0, 1: return 4;
+				case 0:
+				case 1: return 4;
 				case 2: return 6;
 				case 3: return 8;
 				case 4: return 2;

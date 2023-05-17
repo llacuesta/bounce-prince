@@ -13,34 +13,34 @@ import utils.LoadSave;
 import gamestates.Playing;
 
 public class Player extends Entity {
-	
+
 	// Animation Attributes
 	private BufferedImage[][] animations;
 	private int animSpeed = 17;
 	private int playerAction = IDLE;
 	private int flipX = 0;
 	private int flipW = 1;
-	
+
 	// Movement Attributes
 	private boolean left, right, jump;
 	private boolean moving = false;
 	private float playerSpeed = 0.5f * Game.TILE_SCALE;
-	
+
 	// Level Data
 	private int[][] levelData;
-	
+
 	// Gravity Attributes
 	private float airSpeed = 0f;
 	private boolean inAir = false;
-	
+
 	// Lives Attributes
 	private BufferedImage emptyLivesBar;
 	private BufferedImage fullLivesBar;
-	
+
 	private int maxHealth = 3;
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
-	
+
 	// Others
 	private final int playerNum;
 
@@ -52,7 +52,7 @@ public class Player extends Entity {
 		loadLives();
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
 	}
-	
+
 	// Update Methods
 	public void update() {
 		updateHealthBar();
@@ -60,7 +60,7 @@ public class Player extends Entity {
 		updateAnimationTick();
 		setAnimation();
 	}
-	
+
 	private void updateHealthBar() {
 		livesBarWidth = FULL_LIVES_BAR_WIDTH - (int) ((currentHealth / (float) maxHealth) * FULL_LIVES_BAR_WIDTH);
 	}
@@ -85,16 +85,16 @@ public class Player extends Entity {
 			currentHealth = maxHealth;
 		}
 	}
-	
+
 	private void setAnimation() {
 		int startAnim = playerAction;
-		
+
 		if (moving) {
 			playerAction = RUN;
 		} else {
 			playerAction = IDLE;
 		}
-		
+
 		if (inAir) {
 			if (airSpeed < 0) {
 				playerAction = JUMP;
@@ -102,17 +102,17 @@ public class Player extends Entity {
 				playerAction = FALL;
 			}
 		}
-		
+
 		if (startAnim != playerAction) {
 			resetAnimTick();
 		}
 	}
-	
+
 	private void resetAnimTick() {
 		animTick = 0;
 		animIndex = 0;
 	}
-	
+
 	private void updatePos() {
 		moving = false;
 		if (jump) {
@@ -123,20 +123,20 @@ public class Player extends Entity {
 				return;
 			}
 		}
-			
+
 		float xSpeed = 0;
-		
+
 		if (left) {
 			xSpeed -= playerSpeed;
 			flipX = width;
 			flipW = -1;
-		} 
+		}
 		if (right) {
 			xSpeed += playerSpeed;
 			flipX = 0;
 			flipW = 1;
 		}
-		
+
 		if (!inAir) {
 			if (!IsEntityOnFloor(hitbox, levelData)) {
 				inAir = true;
@@ -162,29 +162,29 @@ public class Player extends Entity {
 		}
 		moving = true;
 	}
-	
+
 	private void updateXPos(float xSpeed) {
 		if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
 			hitbox.x += xSpeed;
 		} else {
 			hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
-		} 
+		}
 	}
-	
+
 	private void resetInAir() {
 		inAir = false;
 		airSpeed = 0;
 	}
-	
+
 	private void jump() {
 		if (inAir) {
 			return;
 		}
-		
+
 		inAir = true;
 		airSpeed = JUMP_SPEED;
 	}
- 	
+
 	// Render Methods
 	public void render(Graphics g, int levelOffset) {
 		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - X_DRAW_OFFSET) + flipX, (int) (hitbox.y - Y_DRAW_OFFSET) - levelOffset, width * flipW, height, null);
@@ -227,7 +227,7 @@ public class Player extends Entity {
 			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), FULL_LIVES_BAR_X, FULL_LIVES_BAR_Y, FULL_LIVES_BAR_WIDTH - livesBarWidth, FULL_LIVES_BAR_HEIGHT, null);
 		}
 	}
-	
+
 	public void loadLevelData(int[][] levelData) {
 		this.levelData = levelData;
 		if (!IsEntityOnFloor(hitbox, levelData)) {

@@ -1,7 +1,6 @@
 package levels;
 
 import main.Game;
-import org.snakeyaml.engine.v2.api.Load;
 import utils.LoadSave;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -22,10 +21,10 @@ public class LevelHandler {
 		buildLevel(levelIndex);
 		maxHeight = level.getLevelImg().getHeight();
 	}
-	
+
 	// Update methods
 	public void update() {}
-	
+
 	// Render methods
 	public void draw(Graphics g, int levelOffset) {
 		for (int j = 0; j < maxHeight; j++) {
@@ -37,7 +36,7 @@ public class LevelHandler {
 					g.drawImage(levelSprite[index], i * Game.TILES_SIZE, (j - (maxHeight - Game.TILES_IN_HEIGHT)) * Game.TILES_SIZE - levelOffset, Game.TILES_SIZE, Game.TILES_SIZE, null);
 				}
 			}
-		}	
+		}
 	}
 
 	// Misc Methods
