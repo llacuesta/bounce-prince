@@ -10,6 +10,7 @@ public abstract class Entity {
 	protected float x, y;
 	protected int width, height;
 	protected Rectangle2D.Float hitbox;
+	protected int animTick, animIndex;
 
 	// Constructor
 	public Entity(float x, float y, int width, int height) {
@@ -18,15 +19,9 @@ public abstract class Entity {
 		this.width = width;
 		this.height = height;
 	}
-	
-	// TODO: Change width and height to int
+
 	protected void initHitbox(float x, float y, float width, float height) {
 		this.hitbox = new Rectangle2D.Float(x, y, width, height);
-	}
-
-	protected  void setHitbox(float x, float y) {
-		this.hitbox.x = x;
-		this.hitbox.y = y;
 	}
 	
 	protected void drawHitbox(Graphics g) {

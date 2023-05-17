@@ -3,7 +3,6 @@ package gamestates;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
 import entities.Crown;
 import entities.Player;
 import levels.LevelHandler;
@@ -12,7 +11,6 @@ import ui.CountdownOverlay;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.TimerOverlay;
-import utils.LoadSave;
 
 public class Playing extends State implements StateMethods {
 
@@ -24,9 +22,7 @@ public class Playing extends State implements StateMethods {
 	// Level Scrolling Attributes
 	private int yLevelOffset = 0;
 	private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
-	private int levelTilesTall = LoadSave.GetLevelData().length;
-	private int minTilesOffset = Game.TILES_IN_HEIGHT - levelTilesTall;
-	private int minLevelOffsetY = minTilesOffset * Game.TILES_SIZE;
+	private int minLevelOffsetY;
 
 	// Overlays Attributes
 	private GameOverOverlay gameOverOverlay;
@@ -42,15 +38,16 @@ public class Playing extends State implements StateMethods {
 	public Playing(Game game) {
 		super(game);
 		initClasses();
+		calculateOffset();
 	}
 	
 	// Init Method
 	private void initClasses() {
 		// Initiating Level and Entities
-		levelHandler = new LevelHandler(game);
-		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), this);
+		levelHandler = new LevelHandler(game, 1);
+		player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), 4);
 		player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
-		crown = LoadSave.GenerateCrown();
+		crown = levelHandler.getCurrentLevel().getCrown();
 
 		// Initiating Overlays
 		gameOverOverlay = new GameOverOverlay(this);
@@ -67,12 +64,13 @@ public class Playing extends State implements StateMethods {
 			player.update();
 			crown.update();
 			checkCloseToBorder();
+			checkIfWithinVisible();
 
+			// Start Countdown
 			if (!countdownStart) {
 				countdownOverlay.update();
 				countdownStart = true;
 			}
-
 			if (countdownOverlay.getCount() == 0) {
 				if (!timerStart) {
 					timerOverlay.startTime();
@@ -80,10 +78,18 @@ public class Playing extends State implements StateMethods {
 				}
 				timerOverlay.update();
 			}
+
+			// Win and lose condition
+			if (checkCrownTouched()) {
+				setGameWin(true);
+			}
+			if (getPlayer().getPlayerHealth() <= 0) {
+				setGameOver(true);
+			}
 		}
 	}
 
-	public boolean checkCrownTouched() {
+	private boolean checkCrownTouched() {
 		return player.getHitbox().intersects(crown.getHitbox());
 	}
 
@@ -102,8 +108,8 @@ public class Playing extends State implements StateMethods {
 		}
 	}
 
-	public void checkIfWithinVisible() {
-		if (player.getHitbox().y + player.getHeight() / 2 > Game.GAME_HEIGHT + yLevelOffset) {
+	private void checkIfWithinVisible() {
+		if (player.getHitbox().y + (player.getHeight() / 2) > Game.GAME_HEIGHT + yLevelOffset) {
 			player.changeHealth(-3);
 		}
 	}
@@ -131,10 +137,6 @@ public class Playing extends State implements StateMethods {
 		return player;
 	}
 
-	public void windowFocusLost() {
-		player.resetDirBooleans();
-	}
-
 	public void resetAll() {
 		// Resetting timers
 		timerStart = false;
@@ -149,11 +151,15 @@ public class Playing extends State implements StateMethods {
 		yLevelOffset = 0;
 	}
 
-	public void setGameOver(boolean gameOver) {
+	private void calculateOffset() {
+		minLevelOffsetY = levelHandler.getCurrentLevel().getMinLevelOffset();
+	}
+
+	private void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
 
-	public void setGameWin(boolean gameWin) {
+	private void setGameWin(boolean gameWin) {
 		this.gameWin = gameWin;
 	}
 
@@ -175,9 +181,6 @@ public class Playing extends State implements StateMethods {
 						break;
 					case KeyEvent.VK_D:
 						player.setRight(true);
-						break;
-					case KeyEvent.VK_ESCAPE:
-						Gamestate.state = Gamestate.MENU;
 						break;
 				}
 			}
@@ -203,21 +206,17 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 }

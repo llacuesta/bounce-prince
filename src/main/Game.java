@@ -3,6 +3,7 @@ package main;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
+import gamestates.Tutorial;
 
 import java.awt.Graphics;
 
@@ -27,6 +28,7 @@ public class Game implements Runnable {
 	// Gamestates
 	private Playing playing;
 	private Menu menu;
+	private Tutorial tutorial;
 	
 	// Constructor
 	public Game() {
@@ -47,6 +49,7 @@ public class Game implements Runnable {
 	private void initClasses() {
 		menu = new Menu(this);
 		playing = new Playing(this);
+		tutorial = new Tutorial(this);
 	}
 	
 	// Game Loop
@@ -106,8 +109,10 @@ public class Game implements Runnable {
 		case PLAYING:
 			playing.update();
 			break;
-		case OPTIONS:
-		case QUIT:
+		case TUTORIAL:
+			tutorial.update();
+			break;
+		case CREDITS, QUIT:
 		default:
 			System.exit(0);
 			break;
@@ -121,6 +126,9 @@ public class Game implements Runnable {
 			break;
 		case PLAYING:
 			playing.draw(g);
+			break;
+		case TUTORIAL:
+			tutorial.draw(g);
 			break;
 		default:
 			break;
@@ -140,4 +148,6 @@ public class Game implements Runnable {
 	public Playing getPlaying() {
 		return playing;
 	}
+
+	public Tutorial getTutorial() { return tutorial; }
 }

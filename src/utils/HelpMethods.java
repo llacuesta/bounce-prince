@@ -1,22 +1,28 @@
 package utils;
 
+import entities.Crown;
 import main.Game;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.awt.geom.Rectangle2D;
 
 public class HelpMethods {
 
 	public static boolean CanMoveHere(float x, float y, float width, float height, int[][] levelData) {
-		if (!IsSolid(x, y, levelData))
-			if (!IsSolid(x + width, y + height, levelData))
-				if (!IsSolid(x + width, y, levelData))
-					if (!IsSolid(x, y + height, levelData))
-						return true;
+		 if (!IsSolid(x, y, levelData)) {
+			 if (!IsSolid(x + width, y + height, levelData) && !IsSolid(x + width, y + height / 2, levelData)) {
+				 if (!IsSolid(x + width, y, levelData)) {
+					 if (!IsSolid(x, y + height, levelData) && !IsSolid(x, y + height / 2, levelData)) {
+						 return true;
+					 }
+				 }
+			 }
+		 }
 		return false;
 	}
-	
-	// TODO: Bug here where the sprite is too tall to not detect collision 
-	// if a single tile goes right in between the top and bottom of the sprite
+
 	private static boolean IsSolid(float x, float y, int[][] levelData) {
 		int maxHeight = levelData.length * Game.TILES_SIZE;
 		
@@ -35,8 +41,8 @@ public class HelpMethods {
 			yVal = levelData.length - 1;
 		}
 		int value = levelData[yVal][(int) xIndex];
-		if (value >= 96) value -= 96;
-		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 30, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
+		if (value >= 93) value -= 93;
+		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
 			return true;
 		} else {
 			return false;

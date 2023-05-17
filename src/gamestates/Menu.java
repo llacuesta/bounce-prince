@@ -1,6 +1,6 @@
 package gamestates;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -9,9 +9,11 @@ import main.Game;
 import ui.MenuButton;
 import utils.LoadSave;
 
+import javax.swing.*;
+
 public class Menu extends State implements StateMethods {
 
-	private MenuButton[] buttons = new MenuButton[3];
+	private MenuButton[] buttons = new MenuButton[4];
 	private BufferedImage background;
 	private int menuX, menuY, menuWidth, menuHeight;
 
@@ -27,13 +29,14 @@ public class Menu extends State implements StateMethods {
 		menuWidth = background.getWidth();
 		menuHeight = background.getHeight();
 		menuX = (Game.GAME_WIDTH / 2) - (menuWidth / 2);
-		menuY = 45;
+		menuY = (Game.GAME_HEIGHT / 2) - (menuHeight / 2) + 38;
 	}
 
 	private void loadButtons() {
-		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, 150, 0, Gamestate.PLAYING);
-		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, 220, 1, Gamestate.OPTIONS);
-		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, 290, 2, Gamestate.QUIT);
+		buttons[0] = new MenuButton(Game.GAME_WIDTH - 210, 335, 0, Gamestate.PLAYING);
+		buttons[1] = new MenuButton(Game.GAME_WIDTH - 210, 425, 1, Gamestate.TUTORIAL);
+		buttons[2] = new MenuButton(Game.GAME_WIDTH - 210, 515, 2, Gamestate.CREDITS);
+		buttons[3] = new MenuButton(Game.GAME_WIDTH - 210, 605, 3, Gamestate.QUIT);
 	}
 
 	@Override
@@ -44,8 +47,12 @@ public class Menu extends State implements StateMethods {
 
 	@Override
 	public void draw(Graphics g) {
+		Image menuBG = new ImageIcon(getClass().getResource("/assets/background.gif")).getImage();
+		BufferedImage title = LoadSave.GetSpriteAtlas(LoadSave.TITLE);
 
-		g.drawImage(background, menuX, menuY, menuWidth, menuHeight, null);
+		g.drawImage(menuBG, (int) (240 * Game.TILE_SCALE), 0, (int) (240 * -Game.TILE_SCALE), (int) (200 * Game.TILE_SCALE), null);
+		g.drawImage(title, (Game.GAME_WIDTH) - (title.getWidth() + 310), 55, (int) (title.getWidth() * 3), (int) (title.getHeight() * 3), null);
+//		g.drawImage(background, menuX, menuY, menuWidth, menuHeight, null);
 
 		for(MenuButton mb : buttons)
 			mb.draw(g);
@@ -106,5 +113,4 @@ public class Menu extends State implements StateMethods {
 				break;
 			}
 	}
-
 }

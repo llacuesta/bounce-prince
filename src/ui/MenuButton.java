@@ -11,7 +11,7 @@ import static utils.Constants.UI.Buttons.*;
 public class MenuButton {
 
     private int xPos, yPos, rowIndex, index;
-    private int xOffsetCenter = B_WIDTH_DEFAULT / 2;
+    private int xOffsetCenter = (int) (B_WIDTH_DEFAULT * 1.5) / 2;
     private Gamestate state;
     private BufferedImage[] imgs;
     private boolean mouseOver, mousePressed;
@@ -42,7 +42,7 @@ public class MenuButton {
     }
 
     public void draw(Graphics g) {
-        g.drawImage(imgs[index], xPos- xOffsetCenter, yPos, B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT, null);
+        g.drawImage(imgs[index], xPos- xOffsetCenter, yPos, (int) (B_WIDTH_DEFAULT * 1.5), (int) (B_HEIGHT_DEFAULT * 1.5), null);
     }
 
     public void update() {
