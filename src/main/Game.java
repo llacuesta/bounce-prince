@@ -150,4 +150,7 @@ public class Game implements Runnable {
 	}
 
 	public Tutorial getTutorial() { return tutorial; }
+
+	public GamePanel getGamePanel() {
+		return gamePanel; }
 }

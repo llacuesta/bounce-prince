@@ -52,7 +52,6 @@ public class Menu extends State implements StateMethods {
 
 		g.drawImage(menuBG, (int) (240 * Game.TILE_SCALE), 0, (int) (240 * -Game.TILE_SCALE), (int) (200 * Game.TILE_SCALE), null);
 		g.drawImage(title, (Game.GAME_WIDTH) - (title.getWidth() + 310), 55, (int) (title.getWidth() * 3), (int) (title.getHeight() * 3), null);
-//		g.drawImage(background, menuX, menuY, menuWidth, menuHeight, null);
 
 		for(MenuButton mb : buttons)
 			mb.draw(g);

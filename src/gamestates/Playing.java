@@ -7,10 +7,7 @@ import entities.Crown;
 import entities.Player;
 import levels.LevelHandler;
 import main.Game;
-import ui.CountdownOverlay;
-import ui.GameOverOverlay;
-import ui.LevelCompleteOverlay;
-import ui.TimerOverlay;
+import ui.*;
 
 public class Playing extends State implements StateMethods {
 
@@ -29,6 +26,7 @@ public class Playing extends State implements StateMethods {
 	private LevelCompleteOverlay levelCompleteOverlay;
 	private TimerOverlay timerOverlay;
 	private CountdownOverlay countdownOverlay;
+	private ChatOverlay chatInterface;
 	private boolean timerStart = false;
 	private boolean countdownStart = false;
 	private boolean gameOver = false;
@@ -121,6 +119,7 @@ public class Playing extends State implements StateMethods {
 		player.render(g, yLevelOffset);
 		crown.render(g, yLevelOffset);
 		countdownOverlay.draw(g);
+
 		if (countdownOverlay.getCount() == 0) {
 			timerOverlay.draw(g);
 		}
@@ -166,12 +165,15 @@ public class Playing extends State implements StateMethods {
 	// Input methods
 	@Override
 	public void keyPressed(KeyEvent e) {
+
 		if (gameOver) {
 			gameOverOverlay.keyPressed(e);
 		} else if (gameWin) {
 			levelCompleteOverlay.keyPressed(e);
 		} else {
 			if (countdownOverlay.getCount() == 0) {
+				chatInterface = game.getGamePanel().getChatInterface();
+
 				switch(e.getKeyCode()) {
 					case KeyEvent.VK_W, KeyEvent.VK_SPACE:
 						player.setJump(true);
@@ -181,6 +183,17 @@ public class Playing extends State implements StateMethods {
 						break;
 					case KeyEvent.VK_D:
 						player.setRight(true);
+						break;
+					case KeyEvent.VK_T:
+						if (!chatInterface.isChatVisible()) {
+							chatInterface.requestFocus();
+							chatInterface.setChatVisible(true);
+						}
+						break;
+					case KeyEvent.VK_ESCAPE:
+						if (chatInterface.isChatVisible()) {
+							chatInterface.setChatVisible(false);
+						}
 						break;
 				}
 			}
