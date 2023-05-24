@@ -42,7 +42,7 @@ public class HelpMethods {
 		}
 		int value = levelData[yVal][(int) xIndex];
 		if (value >= 93) value -= 93;
-		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
+		if (Arrays.asList(8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 27, 28, 33, 34, 35, 36, 43, 51, 52, 67, 71, 77, 78, 79).contains(value)) {
 			return true;
 		} else {
 			return false;

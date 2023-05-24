@@ -1,6 +1,9 @@
 package main;
 
 // Imports
+import ui.ChatOverlay;
+
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 

@@ -1,9 +1,6 @@
 package main;
 
-import gamestates.Gamestate;
-import gamestates.Menu;
-import gamestates.Playing;
-import gamestates.Tutorial;
+import gamestates.*;
 
 import java.awt.Graphics;
 
@@ -29,6 +26,8 @@ public class Game implements Runnable {
 	private Playing playing;
 	private Menu menu;
 	private Tutorial tutorial;
+	private Create create;
+	private Join join;
 	
 	// Constructor
 	public Game() {
@@ -50,6 +49,8 @@ public class Game implements Runnable {
 		menu = new Menu(this);
 		playing = new Playing(this);
 		tutorial = new Tutorial(this);
+		create = new Create(this);
+		join = new Join(this);
 	}
 	
 	// Game Loop
@@ -106,6 +107,12 @@ public class Game implements Runnable {
 		case MENU:
 			menu.update();
 			break;
+		case CREATE:
+			create.update();
+			break;
+		case JOIN:
+			join.update();
+			break;
 		case PLAYING:
 			playing.update();
 			break;
@@ -123,6 +130,12 @@ public class Game implements Runnable {
 		switch(Gamestate.state) {
 		case MENU:
 			menu.draw(g);
+			break;
+		case CREATE:
+			create.draw(g);
+			break;
+		case JOIN:
+			join.draw(g);
 			break;
 		case PLAYING:
 			playing.draw(g);
@@ -144,10 +157,18 @@ public class Game implements Runnable {
 	public Menu getMenu() {
 		return menu;
 	}
-	
+
+	public Create getCreate() { return create; }
+
+	public Join getJoin() { return join; }
+
 	public Playing getPlaying() {
 		return playing;
 	}
 
 	public Tutorial getTutorial() { return tutorial; }
+
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
 }

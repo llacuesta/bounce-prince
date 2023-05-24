@@ -3,10 +3,12 @@ package main;
 // Imports
 import inputs.KeyboardInputs;
 import inputs.MouseInputs;
+import ui.ChatOverlay;
+import ui.JoinOverlay;
 
-import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
+
 import static main.Game.GAME_HEIGHT;
 import static main.Game.GAME_WIDTH;
 
@@ -14,6 +16,8 @@ public class GamePanel extends JPanel {
 
 	private MouseInputs mouseInputs;
 	private Game game;
+	private ChatOverlay chatInterface;
+	private JoinOverlay joinInterface;
 	
 	// Constructor
 	public GamePanel(Game game) {
@@ -26,6 +30,13 @@ public class GamePanel extends JPanel {
 		addKeyListener(new KeyboardInputs(this));
 		addMouseListener(mouseInputs);
 		addMouseMotionListener(mouseInputs);
+
+		// Chat Interface
+		chatInterface = new ChatOverlay();
+		add(chatInterface, BorderLayout.EAST);
+		// Join Interface
+		joinInterface = new JoinOverlay();
+		add(joinInterface, BorderLayout.SOUTH);
 	}
 
 	// Initialize Panel
@@ -43,8 +54,16 @@ public class GamePanel extends JPanel {
 		super.paintComponent(g);
 		game.render(g);
 	}
-	
+
 	public Game getGame() {
 		return game;
+	}
+
+	public ChatOverlay getChatInterface() {
+		return chatInterface;
+	}
+
+	public JoinOverlay getJoinInterface() {
+		return joinInterface;
 	}
 }

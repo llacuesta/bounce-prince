@@ -1,11 +1,9 @@
 package levels;
 
 import main.Game;
-import org.snakeyaml.engine.v2.api.Load;
 import utils.LoadSave;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class LevelHandler {
 
