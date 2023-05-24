@@ -4,6 +4,7 @@ package main;
 import inputs.KeyboardInputs;
 import inputs.MouseInputs;
 import ui.ChatOverlay;
+import ui.JoinOverlay;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ public class GamePanel extends JPanel {
 	private MouseInputs mouseInputs;
 	private Game game;
 	private ChatOverlay chatInterface;
+	private JoinOverlay joinInterface;
 	
 	// Constructor
 	public GamePanel(Game game) {
@@ -32,6 +34,9 @@ public class GamePanel extends JPanel {
 		// Chat Interface
 		chatInterface = new ChatOverlay();
 		add(chatInterface, BorderLayout.EAST);
+		// Join Interface
+		joinInterface = new JoinOverlay();
+		add(joinInterface, BorderLayout.SOUTH);
 	}
 
 	// Initialize Panel
@@ -56,5 +61,9 @@ public class GamePanel extends JPanel {
 
 	public ChatOverlay getChatInterface() {
 		return chatInterface;
+	}
+
+	public JoinOverlay getJoinInterface() {
+		return joinInterface;
 	}
 }

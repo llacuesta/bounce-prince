@@ -1,9 +1,7 @@
 package ui;
 
 // Imports
-import com.intellij.ui.components.JBScrollPane;
-import main.Game;
-import main.GameWindow;
+import chat.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,18 +12,19 @@ import java.awt.event.KeyEvent;
 
 public class ChatOverlay extends JPanel {
 
-    private JTextArea chatTextArea;
+    public JTextArea chatTextArea;
     private JTextField chatTextField;
     private JButton chatSendButton;
     private boolean chatVisible = false;
+    private Client client;
 
     public ChatOverlay() {
         setLayout(new BorderLayout());
 
-        chatTextArea = new JTextArea();
+        chatTextArea = new JTextArea(8, 25);
         chatTextArea.setEditable(false);
-
         chatTextField = new JTextField(20);
+        chatSendButton = new JButton("Send");
         chatTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -43,7 +42,16 @@ public class ChatOverlay extends JPanel {
                 }
             }
         });
+        chatSendButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String message = chatTextField.getText();
+                processChatMessage(message);
+                chatTextField.setText("");
+            }
+        });
+        add(chatTextArea, BorderLayout.NORTH);
         add(chatTextField, BorderLayout.SOUTH);
+        add(chatSendButton, BorderLayout.EAST);
 
         // Initially, hide the chat panel
         setChatVisible(false);
@@ -65,7 +73,13 @@ public class ChatOverlay extends JPanel {
         // Your game logic code to handle the chat message
         // For now, we'll simply display the received message
         addMessage("Player: " + message);
+        client.serverHandler(message);
     }
 
     public boolean isChatVisible() { return chatVisible; }
+
+    public void setChatClient(Client client) {
+        this.client = client;
+        client.setTextArea(this);
+    }
 }
