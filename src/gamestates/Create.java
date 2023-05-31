@@ -13,6 +13,8 @@ import ui.LobbyOverlay;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Create extends State implements StateMethods {
@@ -33,6 +35,7 @@ public class Create extends State implements StateMethods {
     private GameServer gameServer;
     private GamePlayer gamePlayer;
     private boolean gameServerRunning = false;
+    private boolean gameClientRunning = false;
 
     // Constructor
     public Create(Game game) {
@@ -47,6 +50,8 @@ public class Create extends State implements StateMethods {
         player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), 1);
         player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 
+        otherPlayers = new ArrayList<>();
+        
         // Initiating Client and Server
         server = new Server();
         client = new Client();
@@ -56,6 +61,12 @@ public class Create extends State implements StateMethods {
     // Update Method
     @Override
     public void update() {
+        levelHandler.update();
+        for (Player player : otherPlayers) {
+        	player.update();
+        }
+        player.update();
+    	
         // Getting interfaces
         if (!Objects.isNull(game.getGamePanel())) {
             chatInterface = game.getGamePanel().getChatInterface();
@@ -83,16 +94,25 @@ public class Create extends State implements StateMethods {
             clientConnected = true;
         }
         // Creating gamePlayer client
-
-
-        levelHandler.update();
-        player.update();
+        if (!gameClientRunning) {
+        	try {
+	        	gamePlayer = new GamePlayer(player, InetAddress.getByName(server.getIP()), Integer.parseInt(server.getPort()), 1);
+	            gamePlayer.setState(this);
+	            gamePlayer.startGamePlayer();
+	            gameClientRunning = true;
+        	} catch (Exception e) {
+        		System.out.println("Client creation failed: " + e);
+        	}
+        }
     }
 
     // Draw Method
     @Override
     public void draw(Graphics g) {
         levelHandler.draw(g, 0);
+        for (Player player : otherPlayers) {
+        	player.render(g, 0);
+        }
         player.render(g, 0);
         lobbyOverlay.draw(g);
     }

@@ -18,7 +18,6 @@ public class Join extends State implements StateMethods {
     // Instance Entities
     private Player player;
     private LevelHandler levelHandler;
-    private ArrayList<Player> otherPlayers;
 
     // Client Entities
     private Client client;
@@ -160,9 +159,5 @@ public class Join extends State implements StateMethods {
     @Override
     public void mouseMoved(MouseEvent e) {
 
-    }
-
-    public void setOtherPlayers(ArrayList<Player> otherPlayers) {
-        this.otherPlayers = otherPlayers;
     }
 }

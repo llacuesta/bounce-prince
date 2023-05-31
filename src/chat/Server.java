@@ -62,12 +62,35 @@ public class Server implements Runnable {
         InetAddress ip;
         String address;
 
-        try {
-            ip = InetAddress.getLocalHost();
-            address = ip.getHostAddress();
-            this.ip = address;
-            System.out.println("Your current IP address : " + this.ip);
-        } catch (UnknownHostException e) {
+		try {
+			Enumeration e = NetworkInterface.getNetworkInterfaces();
+			while(e.hasMoreElements())
+			{
+			    NetworkInterface n = (NetworkInterface) e.nextElement();
+			    Enumeration ee = n.getInetAddresses();
+			    while (ee.hasMoreElements())
+			    {
+			        InetAddress i = (InetAddress) ee.nextElement();
+			        if (i instanceof Inet4Address && !i.isLoopbackAddress()) {
+			        	System.out.println("Server IP address: "+ i.getHostAddress());
+		        		this.ip = i.getHostAddress();
+			        }
+			    }
+			}
+
+//			NetworkInterface networkInterface = NetworkInterface.getByName("eth0");
+//	        Enumeration<InetAddress> inetAddress = networkInterface.getInetAddresses();
+//
+//	        for (InetAddress inetAdd : Collections.list(inetAddress)) {
+//	        	// only IPv4 eth0 IP address
+//	        	if(inetAdd instanceof Inet4Address && !inetAdd.isLoopbackAddress()){
+//	        		System.out.println("Server IP address: "+ inetAdd.toString().substring(1));
+//	        		this.ip = inetAdd.toString().substring(1);
+//	        		break;
+//	        	}
+//	        }
+
+		} catch (Exception e) {
             e.printStackTrace();
         }
     }

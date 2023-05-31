@@ -17,7 +17,7 @@ public class GamePlayer implements Runnable {
     private ArrayList<Player> otherPlayers;
     private InetAddress address;
     private int port;
-    private Join joinUI;
+    private State ui;
     private int gamePlayerID = 0;
 
     private final Thread t = new Thread(this);
@@ -115,7 +115,7 @@ public class GamePlayer implements Runnable {
             }
 
             // Update number of players
-            joinUI.setOtherPlayers(otherPlayers);
+            ui.setOtherPlayers(otherPlayers);
         } catch (Exception e) {
             System.out.println("Error occurred: " + e);
         }
@@ -169,7 +169,7 @@ public class GamePlayer implements Runnable {
     }
 
     public void setState(State state) {
-        this.joinUI = (Join) state;
+        this.ui = state;
     };
 
     @Override
