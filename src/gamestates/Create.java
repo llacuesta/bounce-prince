@@ -1,5 +1,8 @@
 package gamestates;
 
+import chat.Client;
+import chat.GamePlayer;
+import chat.GameServer;
 import chat.Server;
 import entities.Player;
 import levels.LevelHandler;
@@ -20,9 +23,16 @@ public class Create extends State implements StateMethods {
 
     // Server-Client Entities
     private Server server;
+    private Client client;
     private LobbyOverlay lobbyOverlay;
     private boolean serverRunning = false;
+    private boolean clientConnected = false;
     private ChatOverlay chatInterface;
+
+    // Multiplayer Entities
+    private GameServer gameServer;
+    private GamePlayer gamePlayer;
+    private boolean gameServerRunning = false;
 
     // Constructor
     public Create(Game game) {
@@ -37,23 +47,43 @@ public class Create extends State implements StateMethods {
         player = new Player(200, 500, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), 1);
         player.loadLevelData(levelHandler.getCurrentLevel().getLevelData());
 
+        // Initiating Client and Server
         server = new Server();
+        client = new Client();
         lobbyOverlay = new LobbyOverlay(server.getIP(), server.getPort());
     }
 
     // Update Method
     @Override
     public void update() {
-        // Getting Chat interface
+        // Getting interfaces
         if (!Objects.isNull(game.getGamePanel())) {
             chatInterface = game.getGamePanel().getChatInterface();
+            chatInterface.setChatClient(client);
         }
 
-        // Running server
+        // Starting chat server
         if (!serverRunning) {
-            serverRunning = true;
             server.startServer();
+            serverRunning = true;
         }
+        // Starting game server
+        if (!gameServerRunning) {
+            // Initiating Client and Server UDP
+            gameServer = new GameServer();
+
+            gameServer.startGameServer();
+            gameServerRunning = true;
+        }
+
+        // Creating chat client
+        if (!clientConnected && server.getStarted()) {
+            client.setClientValues(server.getIP(), Integer.parseInt(server.getPort()));
+            client.startClient();
+            clientConnected = true;
+        }
+        // Creating gamePlayer client
+
 
         levelHandler.update();
         player.update();
@@ -90,9 +120,12 @@ public class Create extends State implements StateMethods {
                 if (chatInterface.isChatVisible()) {
                     chatInterface.setChatVisible(false);
                 } else {
+//                    client.shutdown();
+//                    clientConnected = false;
+//                    server.shutdownServer();
+//                    serverRunning = false;
+
                     Gamestate.state = Gamestate.MENU;
-                    server.shutdownServer();
-                    serverRunning = false;
                 }
                 break;
         }

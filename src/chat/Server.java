@@ -13,6 +13,7 @@ public class Server implements Runnable {
     private boolean done;
     private ExecutorService pool;
     private String ip;
+    private boolean started = false;
 
     public Server() {
 //		int port = 0;
@@ -42,6 +43,7 @@ public class Server implements Runnable {
             server = new ServerSocket(this.port);
             System.out.println("\nServer is Ready!!");
             System.out.println("Port Number: " + this.port);
+            started = true;
 
             pool = Executors.newCachedThreadPool();
 
@@ -107,6 +109,8 @@ public class Server implements Runnable {
         return Integer.toString(this.port);
     }
 
+    public boolean getStarted() { return this.started; }
+
     class ConnectionHandler implements Runnable {
 
         private Socket client;
@@ -123,6 +127,7 @@ public class Server implements Runnable {
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
+                out.println("Type in a nickname to start chatting!");
                 String nickname = in.readLine();
                 System.out.println(nickname + " connected!");
                 broadcast(nickname + " joined the chat!");

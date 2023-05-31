@@ -9,13 +9,14 @@ import static utils.HelpMethods.*;
 import java.awt.image.BufferedImage;
 import main.Game;
 import java.awt.Graphics;
+
 import utils.LoadSave;
 import gamestates.Playing;
 
 public class Player extends Entity {
 	
 	// Animation Attributes
-	private BufferedImage[][] animations;
+	private transient BufferedImage[][] animations;
 	private int animSpeed = 17;
 	private int playerAction = IDLE;
 	private int flipX = 0;
@@ -34,22 +35,22 @@ public class Player extends Entity {
 	private boolean inAir = false;
 	
 	// Lives Attributes
-	private BufferedImage emptyLivesBar;
-	private BufferedImage fullLivesBar;
+//	private BufferedImage emptyLivesBar;
+//	private BufferedImage fullLivesBar;
 	
 	private int maxHealth = 3;
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
 	
 	// Others
-	private final int playerNum;
+	private int playerNum;
 
 	// Constructor
 	public Player(float x, float y, int width, int height, int playerNum) {
 		super(x, y, width, height);
 		this.playerNum = playerNum;
 		loadAnimations();
-		loadLives();
+//		loadLives();
 		initHitbox(x, y, 13 * Game.PLAYER_SCALE, 30 * Game.PLAYER_SCALE);
 	}
 	
@@ -188,16 +189,16 @@ public class Player extends Entity {
 	// Render Methods
 	public void render(Graphics g, int levelOffset) {
 		g.drawImage(animations[playerAction][animIndex], (int) (hitbox.x - X_DRAW_OFFSET) + flipX, (int) (hitbox.y - Y_DRAW_OFFSET) - levelOffset, width * flipW, height, null);
-		drawUI(g);
+//		drawUI(g);
 		drawPlayerIndicator(g, levelOffset);
 		//drawHitbox(g);
 	}
 
 	// Misc Methods
-	private void loadLives() {
-		emptyLivesBar = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_HEALTH_BAR);
-		fullLivesBar = LoadSave.GetSpriteAtlas(LoadSave.FULL_HEALTH_BAR);
-	}
+//	private void loadLives() {
+//		emptyLivesBar = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_HEALTH_BAR);
+//		fullLivesBar = LoadSave.GetSpriteAtlas(LoadSave.FULL_HEALTH_BAR);
+//	}
 
 	private void loadAnimations() {
 		// Change skin according to playerNum
@@ -221,12 +222,12 @@ public class Player extends Entity {
 		g.drawImage(img.getSubimage((this.playerNum - 1) * INDICATOR_WIDTH_DEFAULT, 0, INDICATOR_WIDTH_DEFAULT, INDICATOR_HEIGHT_DEFAULT), (int) this.hitbox.x - 20, (int) (this.hitbox.y - levelOffset) - 74, INDICATOR_WIDTH, INDICATOR_HEIGHT, null);
 	}
 
-	private void drawUI(Graphics g) {
-		g.drawImage(emptyLivesBar, EMPTY_LIVES_BAR_X, EMPTY_LIVES_BAR_Y, EMPTY_LIVES_BAR_WIDTH, EMPTY_LIVES_BAR_HEIGHT, null);
-		if (currentHealth != 0) {
-			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), FULL_LIVES_BAR_X, FULL_LIVES_BAR_Y, FULL_LIVES_BAR_WIDTH - livesBarWidth, FULL_LIVES_BAR_HEIGHT, null);
-		}
-	}
+//	private void drawUI(Graphics g) {
+//		g.drawImage(emptyLivesBar, EMPTY_LIVES_BAR_X, EMPTY_LIVES_BAR_Y, EMPTY_LIVES_BAR_WIDTH, EMPTY_LIVES_BAR_HEIGHT, null);
+//		if (currentHealth != 0) {
+//			g.drawImage(fullLivesBar.getSubimage(0, 0, fullLivesBar.getWidth() - (16 * (maxHealth - currentHealth)), fullLivesBar.getHeight()), FULL_LIVES_BAR_X, FULL_LIVES_BAR_Y, FULL_LIVES_BAR_WIDTH - livesBarWidth, FULL_LIVES_BAR_HEIGHT, null);
+//		}
+//	}
 	
 	public void loadLevelData(int[][] levelData) {
 		this.levelData = levelData;
@@ -240,16 +241,74 @@ public class Player extends Entity {
 	}
 
 	// Setters and Getters
+	// Booleans
 	public void setLeft(boolean left) {
 		this.left = left;
 	}
-
 	public void setRight(boolean right) {
 		this.right = right;
 	}
-
 	public void setJump(boolean jump) {
 		this.jump = jump;
+	}
+	public void setInAir(boolean inAir) { this.inAir = inAir; };
+	public void setMoving(boolean moving) { this.moving = moving; }
+	public boolean isJump() {
+		return jump;
+	}
+	public boolean isInAir() {
+		return inAir;
+	}
+	public boolean isLeft() {
+		return left;
+	}
+	public boolean isRight() {
+		return right;
+	}
+	public boolean isMoving() {
+		return moving;
+	}
+
+	// Player Position
+	public void setX(float x) {
+		this.hitbox.x = x;
+	}
+	public void setY(float y) {
+		this.hitbox.y = y;
+	}
+	public float getX() {
+		return this.hitbox.x;
+	}
+	public float getY() {
+		return this.hitbox.y;
+	}
+
+	// Animations
+	public int getPlayerAction() {
+		return playerAction;
+	}
+	public int getFlipX() {
+		return flipX;
+	}
+	public int getFlipW() {
+		return flipW;
+	}
+	public void setPlayerAction(int playerAction) {
+		this.playerAction = playerAction;
+	}
+	public void setFlipX(int flipX) {
+		this.flipX = flipX;
+	}
+	public void setFlipW(int flipW) {
+		this.flipW = flipW;
+	}
+
+	// Others
+	public void setNum(int num) {
+		this.playerNum = num;
+	}
+	public int getPlayerNum() {
+		return this.playerNum;
 	}
 
 	public void resetDirBooleans() {
