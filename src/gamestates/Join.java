@@ -86,7 +86,8 @@ public class Join extends State implements StateMethods {
                 levelHandler.draw(g, 0);
 
                 // Drawing players
-                for (Player player : otherPlayers) {
+                ArrayList<Player> playersCopy = new ArrayList<>(otherPlayers);
+                for (Player player : playersCopy) {
                     player.render(g, 0);
                 }
                 player.render(g, 0);

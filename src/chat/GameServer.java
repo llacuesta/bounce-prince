@@ -136,15 +136,9 @@ public class GameServer implements Runnable {
 
         for (GamePlayer gp : gamePlayers) {
             if (gp != sender) {
-                String message = "STO" + sender.getPlayer().getX() + "," + sender.getPlayer().getY() + "," + sender.getPlayer().getPlayerNum();
-                byte[] buffer = message.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, gp.getAddress(), gp.getPort());
-
                 try {
                     // Sender to others
                     if (!gp.getAddress().equals(senderAddress) || gp.getPort() != senderPort) {
-                        serverSocket.send(packet);
-                        System.out.println("Broadcasted to other players");
                         otherPlayers.add(gp.getPlayer());
                     }
                 } catch (Exception e) {
@@ -160,11 +154,19 @@ public class GameServer implements Runnable {
 
                 // Send the packet to other players
                 serverSocket.send(packet);
-                System.out.println("Replied to sender");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
+            // Sending number of players first
+            try {
+                byte[] size = Integer.toString(otherPlayers.size()).getBytes();
+                DatagramPacket res = new DatagramPacket(size, size.length, senderPacket.getAddress(), senderPacket.getPort());
+                serverSocket.send(res);
+            } catch (Exception e) {
+                System.out.println("Unable to respond");
+            }
+
             for (Player p : otherPlayers) {
                 try {
                     String message = "OTS"
@@ -184,7 +186,7 @@ public class GameServer implements Runnable {
 
                     // Others to sender
                     serverSocket.send(packet);
-                    System.out.println("Replied to sender");
+//                    System.out.println("Replied to sender");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

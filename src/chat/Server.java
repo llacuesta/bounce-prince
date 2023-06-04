@@ -78,18 +78,6 @@ public class Server implements Runnable {
 			    }
 			}
 
-//			NetworkInterface networkInterface = NetworkInterface.getByName("eth0");
-//	        Enumeration<InetAddress> inetAddress = networkInterface.getInetAddresses();
-//
-//	        for (InetAddress inetAdd : Collections.list(inetAddress)) {
-//	        	// only IPv4 eth0 IP address
-//	        	if(inetAdd instanceof Inet4Address && !inetAdd.isLoopbackAddress()){
-//	        		System.out.println("Server IP address: "+ inetAdd.toString().substring(1));
-//	        		this.ip = inetAdd.toString().substring(1);
-//	        		break;
-//	        	}
-//	        }
-
 		} catch (Exception e) {
             e.printStackTrace();
         }
