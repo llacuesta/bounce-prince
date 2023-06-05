@@ -12,19 +12,36 @@ import java.awt.event.KeyEvent;
 
 public class ChatOverlay extends JPanel {
 
-    public JTextArea chatTextArea;
+    public JTextArea chatTextArea, fillerArea;
     private JTextField chatTextField;
     private JButton chatSendButton;
     private boolean chatVisible = false;
     private Client client;
 
     public ChatOverlay() {
+        setBackground(new Color(0,0,0,0));
         setLayout(new BorderLayout());
+
+        JPanel filler = new JPanel();
+        filler.setBackground(new Color(0,0,0,0));
+        fillerArea = new JTextArea(25, 30);     //adjust rows to move the chat box to the bottom
+        fillerArea.setEditable(false);
+        fillerArea.setBackground(new Color(0,0,0,0));
+        filler.add(fillerArea);
 
         chatTextArea = new JTextArea(8, 25);
         chatTextArea.setEditable(false);
+        chatTextArea.setBackground(new Color(0,0,0,30));
+        chatTextArea.setForeground(Color.WHITE);
+
         chatTextField = new JTextField(20);
+        chatTextField.setBackground(new Color(0,0,0,30));
+        chatTextField.setForeground(Color.WHITE);
+
         chatSendButton = new JButton("Send");
+        chatSendButton.setBackground(new Color(0,0,0,30));
+        chatSendButton.setForeground(Color.WHITE);
+
         chatTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -49,7 +66,9 @@ public class ChatOverlay extends JPanel {
                 chatTextField.setText("");
             }
         });
-        add(chatTextArea, BorderLayout.NORTH);
+
+        add(filler, BorderLayout.NORTH);
+        add(chatTextArea, BorderLayout.CENTER);
         add(chatTextField, BorderLayout.SOUTH);
         add(chatSendButton, BorderLayout.EAST);
 
