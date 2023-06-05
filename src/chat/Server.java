@@ -13,6 +13,7 @@ public class Server implements Runnable {
     private boolean done;
     private ExecutorService pool;
     private String ip;
+    private boolean started = false;
 
     public Server() {
 //		int port = 0;
@@ -42,6 +43,7 @@ public class Server implements Runnable {
             server = new ServerSocket(this.port);
             System.out.println("\nServer is Ready!!");
             System.out.println("Port Number: " + this.port);
+            started = true;
 
             pool = Executors.newCachedThreadPool();
 
@@ -60,12 +62,23 @@ public class Server implements Runnable {
         InetAddress ip;
         String address;
 
-        try {
-            ip = InetAddress.getLocalHost();
-            address = ip.getHostAddress();
-            this.ip = address;
-            System.out.println("Your current IP address : " + this.ip);
-        } catch (UnknownHostException e) {
+		try {
+			Enumeration e = NetworkInterface.getNetworkInterfaces();
+			while(e.hasMoreElements())
+			{
+			    NetworkInterface n = (NetworkInterface) e.nextElement();
+			    Enumeration ee = n.getInetAddresses();
+			    while (ee.hasMoreElements())
+			    {
+			        InetAddress i = (InetAddress) ee.nextElement();
+			        if (i instanceof Inet4Address && !i.isLoopbackAddress()) {
+			        	System.out.println("Server IP address: "+ i.getHostAddress());
+		        		this.ip = i.getHostAddress();
+			        }
+			    }
+			}
+
+		} catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -107,6 +120,8 @@ public class Server implements Runnable {
         return Integer.toString(this.port);
     }
 
+    public boolean getStarted() { return this.started; }
+
     class ConnectionHandler implements Runnable {
 
         private Socket client;
@@ -123,6 +138,7 @@ public class Server implements Runnable {
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
+                out.println("Type in a nickname to start chatting!");
                 String nickname = in.readLine();
                 System.out.println(nickname + " connected!");
                 broadcast(nickname + " joined the chat!");

@@ -1,5 +1,6 @@
 package chat;
 
+import gamestates.Gamestate;
 import ui.ChatOverlay;
 
 import java.net.Socket;
@@ -18,9 +19,8 @@ public class Client extends JPanel implements Runnable {
     private int port = 9876;
     private String servername = "172.18.250.230";
     private boolean done;
-    private JTextField tf;
-    private JButton b1;
     private JTextArea ta;
+    private boolean clientStarted = false;
 
     public Client() {
 //		int port = 0;
@@ -77,7 +77,7 @@ public class Client extends JPanel implements Runnable {
         try {
             client = new Socket();
             client.connect(new InetSocketAddress(this.servername, this.port), 200);
-
+            clientStarted = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,27 +124,11 @@ public class Client extends JPanel implements Runnable {
         }
     }
 
-//    public void serverHandler(JPanel jp) {
-//        tf = new JTextField(20);
-//        b1 = new JButton("Send");
-//        jp.add(tf);
-//        jp.add(b1);
-//
-//        ta = new JTextArea(8, 25);
-//        JScrollPane scrollPane = new JScrollPane(ta);
-//        ta.setEditable(false);
-//        jp.add(scrollPane);
-//
-//        b1.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                String message = tf.getText();
-//                tf.setText("");
-//                out.println(message);
-//            }
-//        });
-//    }
-
     public void serverHandler(String message) {
         out.println(message);
+    }
+
+    public boolean isClientStarted() {
+        return clientStarted;
     }
 }

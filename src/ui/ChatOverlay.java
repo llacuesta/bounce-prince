@@ -70,9 +70,6 @@ public class ChatOverlay extends JPanel {
     }
 
     private void processChatMessage(String message) {
-        // Your game logic code to handle the chat message
-        // For now, we'll simply display the received message
-        addMessage("Player: " + message);
         client.serverHandler(message);
     }
 
