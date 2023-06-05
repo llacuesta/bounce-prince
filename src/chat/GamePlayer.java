@@ -7,6 +7,7 @@ import main.Game;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GamePlayer implements Runnable {
@@ -76,57 +77,45 @@ public class GamePlayer implements Runnable {
         try {
             // Receiving number of players
             byte[] receiveBuffer = new byte[1024];
-            DatagramPacket resPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
-            socket.receive(resPacket);
-            String packetData = new String(resPacket.getData()).trim();
+            DatagramPacket playerPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+            socket.receive(playerPacket);
+            String playerData = new String(playerPacket.getData()).trim();
+            
+            // Parsing message
+            String[] tokens = playerData.split(",");
+            if (tokens[0].equals("OTS")) {
 
-            String[] tokens = packetData.split(",");
-            if (!tokens[0].equals("NOP")) {
+            	String packetData = tokens[1];
+            	tokens = Arrays.copyOfRange(tokens, 2, tokens.length);
+            	
+            	for (int j = 0; j < Integer.parseInt(packetData); j++) {
+            		int index = j*6;
+                    // Getting Values
+                    int playerNum = Integer.parseInt(tokens[0+index]);
+                    float playerX = Float.parseFloat(tokens[1+index]);
+                    float playerY = Float.parseFloat(tokens[2+index]);
 
-                // Loop according to number of players
-                for (int i = 1; i <= Integer.parseInt(packetData); i++) {
-                    DatagramPacket playerPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
-                    socket.receive(playerPacket);
-                    String playerData = new String(playerPacket.getData()).trim();
+                    Player player = getPlayerByNum(playerNum);
+                    
+                    if (player != null) {
+                    	
+                    	int playerAction = Integer.parseInt(tokens[3+index]);
+                        int flipX = Integer.parseInt(tokens[4+index]);
+                        int flipW = Integer.parseInt(tokens[5+index]);
+                        
+                        player.setX(playerX);
+                        player.setY(playerY);
+                        player.setPlayerAction(playerAction);
+                        player.setFlipX(flipX);
+                        player.setFlipW(flipW);
 
-                    // Parsing message
-                    tokens = playerData.split(",");
-                    if (tokens[0].equals("OTS")) {
-                        // Getting Values
-                        int playerNum = Integer.parseInt(tokens[1]);
-                        float playerX = Float.parseFloat(tokens[2]);
-                        float playerY = Float.parseFloat(tokens[3]);
-                        int playerAction = Integer.parseInt(tokens[4]);
-                        int flipX = Integer.parseInt(tokens[5]);
-                        int flipW = Integer.parseInt(tokens[6]);
-//                boolean isRight = Boolean.parseBoolean(tokens[7]);
-//                boolean isLeft = Boolean.parseBoolean(tokens[8]);
-//                boolean isJump = Boolean.parseBoolean(tokens[9]);
-//                boolean isMoving = Boolean.parseBoolean(tokens[10]);
-//                boolean isInAir = Boolean.parseBoolean(tokens[11]);
+                    } else {
+                        player = new Player(playerX, playerY, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), playerNum);
+                        otherPlayers.add(player);
 
-                        Player player = getPlayerByNum(playerNum);
-                        if (player != null) {
-                            player.setX(playerX);
-                            player.setY(playerY);
-                            player.setPlayerAction(playerAction);
-                            player.setFlipX(flipX);
-                            player.setFlipW(flipW);
-//                    player.setRight(isRight);
-//                    player.setLeft(isLeft);
-//                    player.setJump(isJump);
-//                    player.setMoving(isMoving);
-//                    player.setInAir(isInAir);
-//
-//                    System.out.println("Updated player " + playerNum);
-                        } else {
-                            player = new Player(Float.parseFloat(tokens[2]), Float.parseFloat(tokens[3]), (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), Integer.parseInt(tokens[1]));
-                            otherPlayers.add(player);
-
-                            System.out.println("Added player " + playerNum);
-                        }
+                        System.out.println("Added player " + playerNum);
                     }
-                }
+            	}
             }
 
 

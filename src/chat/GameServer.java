@@ -118,7 +118,21 @@ public class GameServer implements Runnable {
 //            gamePlayer.getPlayer().setInAir(isInAir);
 
             // Broadcast the player's movement to all clients
-            broadcastMovement(gamePlayer, clientAddress, clientPort, packet);
+            List<Player> otherPlayers = new ArrayList<>();
+
+            for (GamePlayer gp : gamePlayers) {
+                if (gp != gamePlayer) {
+                    try {
+                        // Sender to others
+                        if (!gp.getAddress().equals(clientAddress) || gp.getPort() != clientPort) {
+                            otherPlayers.add(gp.getPlayer());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            broadcastMovement(otherPlayers, packet);
         }
     }
 
@@ -131,22 +145,7 @@ public class GameServer implements Runnable {
         return null;
     }
 
-    private void broadcastMovement(GamePlayer sender, InetAddress senderAddress, int senderPort, DatagramPacket senderPacket) {
-        List<Player> otherPlayers = new ArrayList<>();
-
-        for (GamePlayer gp : gamePlayers) {
-            if (gp != sender) {
-                try {
-                    // Sender to others
-                    if (!gp.getAddress().equals(senderAddress) || gp.getPort() != senderPort) {
-                        otherPlayers.add(gp.getPlayer());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+    private void broadcastMovement(List<Player> otherPlayers, DatagramPacket senderPacket) {
         if (otherPlayers.size() == 0) {
             try {
                 byte[] buffer = "NOP,".getBytes();
@@ -158,39 +157,29 @@ public class GameServer implements Runnable {
                 e.printStackTrace();
             }
         } else {
-            // Sending number of players first
-            try {
-                byte[] size = Integer.toString(otherPlayers.size()).getBytes();
-                DatagramPacket res = new DatagramPacket(size, size.length, senderPacket.getAddress(), senderPacket.getPort());
-                serverSocket.send(res);
-            } catch (Exception e) {
-                System.out.println("Unable to respond");
-            }
-
+            String message = "OTS," + otherPlayers.size();
             for (Player p : otherPlayers) {
                 try {
-                    String message = "OTS"
-                            + "," + p.getPlayerNum()
+                	message += "," + p.getPlayerNum()
                             + "," + p.getX()
                             + "," + p.getY()
                             + "," + p.getPlayerAction()
                             + "," + p.getFlipX()
                             + "," + p.getFlipW();
-//                            + "," + p.isRight()
-//                            + "," + p.isLeft();
-//                            + "," + p.isJump()
-//                            + "," + p.isMoving();
-//                            + "," + p.isInAir();
-                    byte[] buffer = message.getBytes();
-                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length, senderPacket.getAddress(), senderPacket.getPort());
-
-                    // Others to sender
-                    serverSocket.send(packet);
-//                    System.out.println("Replied to sender");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+            byte[] buffer = message.getBytes();
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, senderPacket.getAddress(), senderPacket.getPort());
+
+            // Others to sender
+            try {
+				serverSocket.send(packet);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
 
         // Sending playerData back to sender
