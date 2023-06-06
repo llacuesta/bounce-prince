@@ -80,6 +80,10 @@ public class JoinOverlay extends JPanel {
         this.player = player;
     }
 
+    public GamePlayer getGamePlayer() {
+        return this.gamePlayer;
+    }
+
     public boolean isJoinVisible() {
         return joinVisible;
     }

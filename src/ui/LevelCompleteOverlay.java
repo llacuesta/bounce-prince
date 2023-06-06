@@ -2,6 +2,7 @@ package ui;
 
 import gamestates.Gamestate;
 import gamestates.Playing;
+import gamestates.State;
 import main.Game;
 import utils.LoadSave;
 
@@ -12,12 +13,12 @@ import java.awt.image.BufferedImage;
 public class LevelCompleteOverlay {
 
     // Instance Attributes
-    private Playing playing;
+    private State playing;
     private BufferedImage winScreen;
     private int winX, winY, winW, winH;
 
     // Constructor
-    public LevelCompleteOverlay(Playing playing) {
+    public LevelCompleteOverlay(State playing) {
         this.playing = playing;
         createImg();
     }

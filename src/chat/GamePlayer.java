@@ -1,6 +1,7 @@
 package chat;
 
 import entities.Player;
+import gamestates.Create;
 import gamestates.Join;
 import gamestates.State;
 import main.Game;
@@ -8,7 +9,6 @@ import main.Game;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class GamePlayer implements Runnable {
 
@@ -20,6 +20,7 @@ public class GamePlayer implements Runnable {
     private int port;
     private State ui;
     private int gamePlayerID = 0;
+    private int yLevelOffset = 0;
 
     private final Thread t = new Thread(this);
 
@@ -58,12 +59,8 @@ public class GamePlayer implements Runnable {
                     + "," + player.getY()
                     + "," + player.getPlayerAction()
                     + "," + player.getFlipX()
-                    + "," + player.getFlipW();
-//                    + "," + player.isRight()
-//                    + "," + player.isLeft();
-//                    + "," + player.isJump()
-//                    + "," + player.isMoving()
-//                    + "," + player.isInAir();
+                    + "," + player.getFlipW()
+                    + "," + this.ui.getyLevelOffset();
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
             socket.send(packet);
@@ -80,34 +77,38 @@ public class GamePlayer implements Runnable {
             DatagramPacket playerPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
             socket.receive(playerPacket);
             String playerData = new String(playerPacket.getData()).trim();
-            
+
             // Parsing message
             String[] tokens = playerData.split(",");
             if (tokens[0].equals("OTS")) {
 
             	String packetData = tokens[1];
             	tokens = Arrays.copyOfRange(tokens, 2, tokens.length);
-            	
+
             	for (int j = 0; j < Integer.parseInt(packetData); j++) {
-            		int index = j*6;
+            		int index = j*7;
                     // Getting Values
                     int playerNum = Integer.parseInt(tokens[0+index]);
                     float playerX = Float.parseFloat(tokens[1+index]);
                     float playerY = Float.parseFloat(tokens[2+index]);
 
                     Player player = getPlayerByNum(playerNum);
-                    
+
                     if (player != null) {
-                    	
+
                     	int playerAction = Integer.parseInt(tokens[3+index]);
                         int flipX = Integer.parseInt(tokens[4+index]);
                         int flipW = Integer.parseInt(tokens[5+index]);
-                        
+                        int yLevelOffset = Integer.parseInt(tokens[6+index]);
+
                         player.setX(playerX);
                         player.setY(playerY);
                         player.setPlayerAction(playerAction);
                         player.setFlipX(flipX);
                         player.setFlipW(flipW);
+
+                        this.yLevelOffset = yLevelOffset;
+                        this.ui.setyLevelOffset(yLevelOffset);
 
                     } else {
                         player = new Player(playerX, playerY, (int) (50 * Game.PLAYER_SCALE), (int) (37 * Game.PLAYER_SCALE), playerNum);
@@ -166,6 +167,10 @@ public class GamePlayer implements Runnable {
         return port;
     }
 
+    public void setyLevelOffset(int yLevelOffset) {
+        this.yLevelOffset = yLevelOffset;
+    }
+
     private Player getPlayerByNum(int num) {
         for (Player player : otherPlayers) {
             if (player.getPlayerNum() == num) {
@@ -178,6 +183,14 @@ public class GamePlayer implements Runnable {
     public void setState(State state) {
         this.ui = state;
     };
+
+    public State getState() {
+        return this.ui;
+    };
+
+    public int getyLevelOffset() {
+        return yLevelOffset;
+    }
 
     @Override
     public void run() {
