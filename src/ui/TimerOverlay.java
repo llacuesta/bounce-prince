@@ -55,7 +55,12 @@ public class TimerOverlay {
         return ((currentTime - previousTime)/1000) + savedTime;
     }
 
-    public void saveTime() {
-        savedTime = getTime();
+    // public void saveTime() { savedTime = getTime(); }
+
+    public String getSavedTime() {
+        if (sec < 10)
+            return (min + ":0" + sec);
+        else
+            return (min + ":" + sec);
     }
 }

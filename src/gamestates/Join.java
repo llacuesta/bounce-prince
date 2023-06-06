@@ -97,7 +97,7 @@ public class Join extends State implements StateMethods {
             player.update();
 
             // Starting up game
-            if (!isPlaying && otherPlayers.size() == 1) {
+            if (!isPlaying && otherPlayers.size() == 3) {
                 // Initialize new level, new player position, crown
                 levelHandler = new LevelHandler(game, 1);
                 player.setX(200);
@@ -117,7 +117,7 @@ public class Join extends State implements StateMethods {
                 isPlaying = true;
             }
         } else if (!isLobby && isPlaying) {
-            if (!gameOver && !gameWin) {
+            if (!gameWin) {
                 levelHandler.update();
 
                 // Updating players
@@ -146,8 +146,15 @@ public class Join extends State implements StateMethods {
                 if (checkCrownTouched()) {
                     setGameWin(true);
                 }
-                if (getPlayer().getPlayerHealth() <= 0) {
+                if (getPlayer().getPlayerHealth() <= 0 && !gameOver) {
                     setGameOver(true);
+
+                    if (player.isAlive()) {
+                        player.setAlive(false);
+                        player.setTimeOfDeath(timerOverlay.getSavedTime());
+
+                        System.out.println("Time of death: " + player.getTimeOfDeath());
+                    }
                 }
             }
         }

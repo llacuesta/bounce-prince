@@ -119,9 +119,6 @@ public class GamePlayer implements Runnable {
             	}
             }
 
-
-
-
             // Update number of players
             ui.setOtherPlayers(otherPlayers);
         } catch (Exception e) {
