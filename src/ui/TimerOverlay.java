@@ -1,14 +1,11 @@
 package ui;
 
 // Imports
-import gamestates.Playing;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
 import main.Game;
 import utils.LoadSave;
-
-import javax.swing.Timer;
 
 public class TimerOverlay {
 
@@ -19,7 +16,7 @@ public class TimerOverlay {
     private Font font;
 
     // Constructor
-    public TimerOverlay(Playing playing) {
+    public TimerOverlay() {
         previousTime = 0;
         currentTime = 0;
         savedTime = 0;
@@ -58,7 +55,12 @@ public class TimerOverlay {
         return ((currentTime - previousTime)/1000) + savedTime;
     }
 
-    public void saveTime() {
-        savedTime = getTime();
+    // public void saveTime() { savedTime = getTime(); }
+
+    public String getSavedTime() {
+        if (sec < 10)
+            return (min + ":0" + sec);
+        else
+            return (min + ":" + sec);
     }
 }

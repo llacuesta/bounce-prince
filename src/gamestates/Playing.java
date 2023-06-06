@@ -50,7 +50,7 @@ public class Playing extends State implements StateMethods {
 		// Initiating Overlays
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
-		timerOverlay = new TimerOverlay(this);
+		timerOverlay = new TimerOverlay();
 		countdownOverlay = new CountdownOverlay();
 	}
 
@@ -127,7 +127,7 @@ public class Playing extends State implements StateMethods {
 		if (gameOver) {
 			gameOverOverlay.draw(g);
 		} else if (gameWin) {
-			levelCompleteOverlay.draw(g);
+			levelCompleteOverlay.draw(g, gameWin);
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class Playing extends State implements StateMethods {
 		// Resetting timers
 		timerStart = false;
 		countdownStart = false;
-		timerOverlay = new TimerOverlay(this);
+		timerOverlay = new TimerOverlay();
 		countdownOverlay = new CountdownOverlay();
 
 		// Resetting win/lose conditions

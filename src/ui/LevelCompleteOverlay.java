@@ -1,31 +1,49 @@
 package ui;
 
+import entities.Player;
 import gamestates.Gamestate;
 import gamestates.Playing;
+import gamestates.State;
 import main.Game;
 import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LevelCompleteOverlay {
 
     // Instance Attributes
-    private Playing playing;
+    private State playing;
     private BufferedImage winScreen;
     private int winX, winY, winW, winH;
+    private Font font;
 
     // Constructor
-    public LevelCompleteOverlay(Playing playing) {
+    public LevelCompleteOverlay(State playing) {
         this.playing = playing;
         createImg();
     }
 
     // Render methods
-    public void draw(Graphics g) {
+    public void draw(Graphics g, boolean gameWin) {
+        // Import font
+        font = LoadSave.ImportFont(LoadSave.FONT).deriveFont(30f);
+
         g.setColor(new Color(0, 0, 0, 75));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+
+        g.setColor(Color.white);
+        g.setFont(font);
+        if (gameWin) {
+            g.drawString("BY REACHING", 325, (int) (73 * Game.TILE_SCALE));
+            g.drawString("THE CROWN FIRST", 360, (int) (80 * Game.TILE_SCALE));
+        } else {
+            g.drawString("BY SURVIVING", 375, (int) (73 * Game.TILE_SCALE));
+            g.drawString("THE LONGEST", 385, (int) (80 * Game.TILE_SCALE));
+        }
 
         g.drawImage(winScreen, winX, winY, winW, winH, null);
     }
@@ -43,6 +61,6 @@ public class LevelCompleteOverlay {
         winW = (int) (winScreen.getWidth() * 2.5);
         winH = (int) (winScreen.getHeight() * 2.5);
         winX = Game.GAME_WIDTH / 2 - winW / 2;
-        winY = Game.GAME_HEIGHT / 2 - winH / 2;
+        winY = 75;
     }
 }

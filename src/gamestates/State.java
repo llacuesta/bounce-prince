@@ -5,13 +5,16 @@ import java.util.ArrayList;
 
 import entities.Player;
 import main.Game;
+import ui.CountdownOverlay;
 import ui.MenuButton;
+import ui.TimerOverlay;
 
 public class State {
 
 	// Instance Attributes
 	protected Game game;
     protected ArrayList<Player> otherPlayers;
+	protected Player player;
 	
 	// Constructor
 	public State(Game game) {
@@ -31,4 +34,14 @@ public class State {
     public void setOtherPlayers(ArrayList<Player> otherPlayers) {
         this.otherPlayers = otherPlayers;
     }
+
+	public void resetAll() {
+		player.resetAll();
+	}
+
+	public int getyLevelOffset() {
+		return 0;
+	}
+
+	public void setyLevelOffset(int yLevelOffset) {}
 }

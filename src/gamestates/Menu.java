@@ -13,7 +13,7 @@ import javax.swing.*;
 
 public class Menu extends State implements StateMethods {
 
-	private MenuButton[] buttons = new MenuButton[4];
+	private MenuButton[] buttons = new MenuButton[3];
 	private BufferedImage background;
 	private int menuX, menuY, menuWidth, menuHeight;
 
@@ -35,8 +35,7 @@ public class Menu extends State implements StateMethods {
 	private void loadButtons() {
 		buttons[0] = new MenuButton(Game.GAME_WIDTH - 210, 335, 0, Gamestate.CREATE);
 		buttons[1] = new MenuButton(Game.GAME_WIDTH - 210, 425, 1, Gamestate.JOIN);
-		buttons[2] = new MenuButton(Game.GAME_WIDTH - 210, 515, 2, Gamestate.CREDITS);
-		buttons[3] = new MenuButton(Game.GAME_WIDTH - 210, 605, 3, Gamestate.QUIT);
+		buttons[2] = new MenuButton(Game.GAME_WIDTH - 210, 605, 3, Gamestate.QUIT);
 	}
 
 	@Override

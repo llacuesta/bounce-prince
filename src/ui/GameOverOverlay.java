@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import gamestates.Gamestate;
 import gamestates.Playing;
+import gamestates.State;
 import main.Game;
 import utils.LoadSave;
 import java.awt.image.BufferedImage;
@@ -13,12 +14,12 @@ import java.awt.image.BufferedImage;
 public class GameOverOverlay {
 
 	// Instance attributes
-	private Playing playing;
+	private State playing;
 	private BufferedImage deathScreen;
 	private int deathX, deathY, deathW, deathH;
 	
 	// Constructor
-	public GameOverOverlay(Playing playing) {
+	public GameOverOverlay(State playing) {
 		this.playing = playing;
 		createImg();
 	}

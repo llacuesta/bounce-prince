@@ -16,11 +16,14 @@ public class GameServer implements Runnable {
     private int playerCount = 0;
     private int numPlayers;
     private List<GamePlayer> gamePlayers;
-
     private DatagramSocket serverSocket = null;
     private int port = 9876;
-
     private Thread t = new Thread(this);
+
+    // Game Logic Booleans
+    private boolean winnerFound = false;
+    private boolean allDead = false;
+    private int deadCount = 0;
 
     // Constructor
     public GameServer() {
@@ -97,11 +100,22 @@ public class GameServer implements Runnable {
             int playerAction = Integer.parseInt(tokens[4]);
             int flipX = Integer.parseInt(tokens[5]);
             int flipW = Integer.parseInt(tokens[6]);
-//            boolean isRight = Boolean.parseBoolean(tokens[7]);
-//            boolean isLeft = Boolean.parseBoolean(tokens[8]);
-//            boolean isJump = Boolean.parseBoolean(tokens[9]);
-//            boolean isMoving = Boolean.parseBoolean(tokens[10]);
-//            boolean isInAir = Boolean.parseBoolean(tokens[11]);
+            boolean isWin = Boolean.parseBoolean(tokens[7]);
+            boolean isAlive = Boolean.parseBoolean(tokens[8]);
+            String timeOfDeath = tokens[9];
+            String timeOfWin = tokens[10];
+            int yLevelOffset = Integer.parseInt(tokens[11]);
+
+            // Checking values
+            if (isWin) {
+                this.winnerFound = true;
+            }
+            if (isAlive) {
+                deadCount++;
+            }
+            if (deadCount == 3) {
+                this.allDead = true;
+            }
 
             // Setting Values
             gamePlayer = getPlayerByID(gamePlayerID);
@@ -111,11 +125,11 @@ public class GameServer implements Runnable {
             gamePlayer.getPlayer().setPlayerAction(playerAction);
             gamePlayer.getPlayer().setFlipX(flipX);
             gamePlayer.getPlayer().setFlipW(flipW);
-//            gamePlayer.getPlayer().setRight(isRight);
-//            gamePlayer.getPlayer().setLeft(isLeft);
-//            gamePlayer.getPlayer().setJump(isJump);
-//            gamePlayer.getPlayer().setMoving(isMoving);
-//            gamePlayer.getPlayer().setInAir(isInAir);
+            gamePlayer.getPlayer().setWin(isWin);
+            gamePlayer.getPlayer().setAlive(isAlive);
+            gamePlayer.getPlayer().setTimeOfDeath(timeOfDeath);
+            gamePlayer.getPlayer().setTimeOfWin(timeOfWin);
+            gamePlayer.setyLevelOffset(yLevelOffset);
 
             // Broadcast the player's movement to all clients
             List<Player> otherPlayers = new ArrayList<>();
@@ -145,6 +159,16 @@ public class GameServer implements Runnable {
         return null;
     }
 
+    private int minOffset(List<GamePlayer> gamePlayers) {
+        int minOffset = 0;
+        for (GamePlayer gp : gamePlayers) {
+            if (gp.getyLevelOffset() < minOffset) {
+                minOffset = gp.getyLevelOffset();
+            }
+        }
+        return minOffset;
+    }
+
     private void broadcastMovement(List<Player> otherPlayers, DatagramPacket senderPacket) {
         if (otherPlayers.size() == 0) {
             try {
@@ -157,18 +181,28 @@ public class GameServer implements Runnable {
                 e.printStackTrace();
             }
         } else {
-            String message = "OTS," + otherPlayers.size();
+            int minOffset = minOffset(gamePlayers);
+            String message;
+
+            if (winnerFound) {
+                message = "WIN," + otherPlayers.size();
+            } else if (allDead) {
+                message = "END," + otherPlayers.size();
+            } else {
+                message = "OTS," + otherPlayers.size();
+            }
             for (Player p : otherPlayers) {
-                try {
-                	message += "," + p.getPlayerNum()
-                            + "," + p.getX()
-                            + "," + p.getY()
-                            + "," + p.getPlayerAction()
-                            + "," + p.getFlipX()
-                            + "," + p.getFlipW();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                message += "," + p.getPlayerNum()
+                        + "," + p.getX()
+                        + "," + p.getY()
+                        + "," + p.getPlayerAction()
+                        + "," + p.getFlipX()
+                        + "," + p.getFlipW()
+                        + "," + p.isWin()
+                        + "," + p.isAlive()
+                        + "," + p.getTimeOfDeath()
+                        + "," + p.getTimeOfWin()
+                        + "," + minOffset;
             }
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, senderPacket.getAddress(), senderPacket.getPort());
@@ -181,21 +215,5 @@ public class GameServer implements Runnable {
 				e.printStackTrace();
 			}
         }
-
-        // Sending playerData back to sender
-//        try {
-//            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-//            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
-//            objectStream.writeObject(otherPlayers);
-//            objectStream.flush();
-//
-//            byte[] data = byteStream.toByteArray();
-//            DatagramPacket packet = new DatagramPacket(data, data.length, senderAddress, senderPort);
-//            serverSocket.send(packet);
-//        } catch (Exception e) {
-//            System.out.println("Unable to send player data: " + e);
-//        }
-
-//        sender.updateOtherPlayerData(otherGamePlayers);
     }
 }

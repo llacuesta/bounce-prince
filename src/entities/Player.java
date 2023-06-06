@@ -41,9 +41,13 @@ public class Player extends Entity {
 	private int maxHealth = 3;
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
+	private boolean alive = true;
+	private boolean win = false;
 	
 	// Others
 	private int playerNum;
+	private String timeOfDeath = "--";
+	private String timeOfWin = "--";
 
 	// Constructor
 	public Player(float x, float y, int width, int height, int playerNum) {
@@ -251,8 +255,12 @@ public class Player extends Entity {
 	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
+	public void setAlive(boolean alive) { this.alive = alive; };
 	public void setInAir(boolean inAir) { this.inAir = inAir; };
 	public void setMoving(boolean moving) { this.moving = moving; }
+	public void setWin(boolean win) {
+		this.win = win;
+	}
 	public boolean isJump() {
 		return jump;
 	}
@@ -267,6 +275,10 @@ public class Player extends Entity {
 	}
 	public boolean isMoving() {
 		return moving;
+	}
+	public boolean isAlive() { return alive; }
+	public boolean isWin() {
+		return win;
 	}
 
 	// Player Position
@@ -307,8 +319,20 @@ public class Player extends Entity {
 	public void setNum(int num) {
 		this.playerNum = num;
 	}
+	public void setTimeOfDeath(String timeOfDeath) {
+		this.timeOfDeath = timeOfDeath;
+	}
+	public void setTimeOfWin(String timeOfWin) {
+		this.timeOfWin = timeOfWin;
+	}
 	public int getPlayerNum() {
 		return this.playerNum;
+	}
+	public String getTimeOfDeath() {
+		return timeOfDeath;
+	}
+	public String getTimeOfWin() {
+		return timeOfWin;
 	}
 
 	public void resetDirBooleans() {
