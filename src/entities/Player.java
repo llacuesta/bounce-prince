@@ -42,11 +42,12 @@ public class Player extends Entity {
 	private int currentHealth = maxHealth;
 	private int livesBarWidth = 0;
 	private boolean alive = true;
-	private String timeOfDeath;
-	private String timeOfWin;
+	private boolean win = false;
 	
 	// Others
 	private int playerNum;
+	private String timeOfDeath = "--";
+	private String timeOfWin = "--";
 
 	// Constructor
 	public Player(float x, float y, int width, int height, int playerNum) {
@@ -257,6 +258,9 @@ public class Player extends Entity {
 	public void setAlive(boolean alive) { this.alive = alive; };
 	public void setInAir(boolean inAir) { this.inAir = inAir; };
 	public void setMoving(boolean moving) { this.moving = moving; }
+	public void setWin(boolean win) {
+		this.win = win;
+	}
 	public boolean isJump() {
 		return jump;
 	}
@@ -273,6 +277,9 @@ public class Player extends Entity {
 		return moving;
 	}
 	public boolean isAlive() { return alive; }
+	public boolean isWin() {
+		return win;
+	}
 
 	// Player Position
 	public void setX(float x) {
@@ -316,7 +323,7 @@ public class Player extends Entity {
 		this.timeOfDeath = timeOfDeath;
 	}
 	public void setTimeOfWin(String timeOfWin) {
-		this.timeOfDeath = timeOfWin;
+		this.timeOfWin = timeOfWin;
 	}
 	public int getPlayerNum() {
 		return this.playerNum;

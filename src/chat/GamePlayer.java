@@ -21,6 +21,7 @@ public class GamePlayer implements Runnable {
     private State ui;
     private int gamePlayerID = 0;
     private int yLevelOffset = 0;
+    private boolean endClient = false;
 
     private final Thread t = new Thread(this);
 
@@ -60,6 +61,10 @@ public class GamePlayer implements Runnable {
                     + "," + player.getPlayerAction()
                     + "," + player.getFlipX()
                     + "," + player.getFlipW()
+                    + "," + player.isWin()
+                    + "," + player.isAlive()
+                    + "," + player.getTimeOfDeath()
+                    + "," + player.getTimeOfWin()
                     + "," + this.ui.getyLevelOffset();
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
@@ -80,13 +85,13 @@ public class GamePlayer implements Runnable {
 
             // Parsing message
             String[] tokens = playerData.split(",");
-            if (tokens[0].equals("OTS")) {
+            if (tokens[0].equals("OTS") || tokens[0].equals("WIN") || tokens[0].equals("END")) {
 
             	String packetData = tokens[1];
             	tokens = Arrays.copyOfRange(tokens, 2, tokens.length);
 
             	for (int j = 0; j < Integer.parseInt(packetData); j++) {
-            		int index = j*7;
+            		int index = j*11;
                     // Getting Values
                     int playerNum = Integer.parseInt(tokens[0+index]);
                     float playerX = Float.parseFloat(tokens[1+index]);
@@ -99,13 +104,21 @@ public class GamePlayer implements Runnable {
                     	int playerAction = Integer.parseInt(tokens[3+index]);
                         int flipX = Integer.parseInt(tokens[4+index]);
                         int flipW = Integer.parseInt(tokens[5+index]);
-                        int yLevelOffset = Integer.parseInt(tokens[6+index]);
+                        boolean isWin = Boolean.parseBoolean(tokens[6+index]);
+                        boolean isAlive = Boolean.parseBoolean(tokens[7+index]);
+                        String timeOfDeath = tokens[8+index];
+                        String timeOfWin = tokens[9+index];
+                        int yLevelOffset = Integer.parseInt(tokens[10+index]);
 
                         player.setX(playerX);
                         player.setY(playerY);
                         player.setPlayerAction(playerAction);
                         player.setFlipX(flipX);
                         player.setFlipW(flipW);
+                        player.setWin(isWin);
+                        player.setAlive(isAlive);
+                        player.setTimeOfDeath(timeOfDeath);
+                        player.setTimeOfWin(timeOfWin);
 
                         this.yLevelOffset = yLevelOffset;
                         this.ui.setyLevelOffset(yLevelOffset);
@@ -121,6 +134,11 @@ public class GamePlayer implements Runnable {
 
             // Update number of players
             ui.setOtherPlayers(otherPlayers);
+
+            // Update game status
+            if (tokens[0].equals("WIN") || tokens[0].equals("END")) {
+                this.endClient = true;
+            }
         } catch (Exception e) {
             System.out.println("Error occurred: " + e);
         }

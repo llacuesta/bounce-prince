@@ -56,6 +56,7 @@ public class Create extends State implements StateMethods {
     // Playing Flags
     private boolean isPlaying = false;
     private boolean isLobby = true;
+    private boolean gameDone = false;
 
     // Constructor
     public Create(Game game) {
@@ -131,7 +132,7 @@ public class Create extends State implements StateMethods {
             player.update();
 
             // Starting up game
-            if (!isPlaying && otherPlayers.size() == 3) {
+            if (!isPlaying && otherPlayers.size() == 1) {
                 // Initialize new level, new player position, crown
                 levelHandler = new LevelHandler(game, 1);
                 player.setX(200);
@@ -151,7 +152,7 @@ public class Create extends State implements StateMethods {
                 isPlaying = true;
             }
         } else if (!isLobby && isPlaying) {
-            if (!gameWin) {
+            if (!gameDone) {
                 levelHandler.update();
 
                 // Updating players
@@ -179,9 +180,27 @@ public class Create extends State implements StateMethods {
                 // Win and lose condition
                 if (checkCrownTouched() && !gameWin) {
                     setGameWin(true);
-                    player.setTimeOfWin(timerOverlay.getSavedTime());
+                    this.gameDone = true;
 
-                    System.out.println("Time of win: " + player.getTimeOfWin());
+                    if (!player.isWin()) {
+                        player.setWin(true);
+                        player.setTimeOfWin(timerOverlay.getSavedTime());
+
+                        System.out.println("Time of win: " + player.getTimeOfWin());
+                    }
+                }
+                if (checkLastManStanding() && !gameWin) {
+                    this.gameDone = true;
+
+                    if (!player.isWin()) {
+                        player.setWin(true);
+                        player.setTimeOfWin(timerOverlay.getSavedTime());
+
+                        System.out.println("Time of win: " + player.getTimeOfWin());
+                    }
+                }
+                if (checkIfWinnerFound() && !gameDone) {
+                    this.gameDone = true;
                 }
                 if (getPlayer().getPlayerHealth() <= 0 && !gameOver) {
                     setGameOver(true);
@@ -193,13 +212,30 @@ public class Create extends State implements StateMethods {
                         System.out.println("Time of death: " + player.getTimeOfDeath());
                     }
                 }
-
             }
         }
     }
 
     private boolean checkCrownTouched() {
         return player.getHitbox().intersects(crown.getHitbox());
+    }
+
+    private boolean checkLastManStanding() {
+        for (Player p : otherPlayers) {
+            if (p.isAlive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfWinnerFound() {
+        for (Player p : otherPlayers) {
+            if (p.isWin()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void checkCloseToBorder() {
@@ -256,10 +292,12 @@ public class Create extends State implements StateMethods {
                 timerOverlay.draw(g);
             }
 
-            if (gameOver) {
+            if (!player.isAlive()) {
                 gameOverOverlay.draw(g);
-            } else if (gameWin) {
-                levelCompleteOverlay.draw(g);
+            }
+
+            if (gameDone) {
+                levelCompleteOverlay.draw(g, gameWin);
             }
         }
     }

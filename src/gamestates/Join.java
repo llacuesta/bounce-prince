@@ -46,6 +46,7 @@ public class Join extends State implements StateMethods {
     // Playing Flags
     private boolean isPlaying = false;
     private boolean isLobby = true;
+    private boolean gameDone = false;
 
     // Constructor
     public Join(Game game) {
@@ -97,7 +98,7 @@ public class Join extends State implements StateMethods {
             player.update();
 
             // Starting up game
-            if (!isPlaying && otherPlayers.size() == 3) {
+            if (!isPlaying && otherPlayers.size() == 1) {
                 // Initialize new level, new player position, crown
                 levelHandler = new LevelHandler(game, 1);
                 player.setX(200);
@@ -117,7 +118,7 @@ public class Join extends State implements StateMethods {
                 isPlaying = true;
             }
         } else if (!isLobby && isPlaying) {
-            if (!gameWin) {
+            if (!gameDone) {
                 levelHandler.update();
 
                 // Updating players
@@ -143,8 +144,29 @@ public class Join extends State implements StateMethods {
                 }
 
                 // Win and lose condition
-                if (checkCrownTouched()) {
+                if (checkCrownTouched() && !gameWin) {
                     setGameWin(true);
+                    this.gameDone = true;
+
+                    if (!player.isWin()) {
+                        player.setWin(true);
+                        player.setTimeOfWin(timerOverlay.getSavedTime());
+
+                        System.out.println("Time of win: " + player.getTimeOfWin());
+                    }
+                }
+                if (checkLastManStanding() && !gameWin) {
+                    this.gameDone = true;
+
+                    if (!player.isWin()) {
+                        player.setWin(true);
+                        player.setTimeOfWin(timerOverlay.getSavedTime());
+
+                        System.out.println("Time of win: " + player.getTimeOfWin());
+                    }
+                }
+                if (checkIfWinnerFound() && !gameDone) {
+                    this.gameDone = true;
                 }
                 if (getPlayer().getPlayerHealth() <= 0 && !gameOver) {
                     setGameOver(true);
@@ -164,6 +186,15 @@ public class Join extends State implements StateMethods {
         return player.getHitbox().intersects(crown.getHitbox());
     }
 
+    private boolean checkLastManStanding() {
+        for (Player p : otherPlayers) {
+            if (p.isAlive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void checkCloseToBorder() {
         int playerY = (int) player.getY();
         int diff = playerY - yLevelOffset;
@@ -181,6 +212,15 @@ public class Join extends State implements StateMethods {
         } else if (yLevelOffset < minLevelOffsetY) {
             yLevelOffset = minLevelOffsetY;
         }
+    }
+
+    private boolean checkIfWinnerFound() {
+        for (Player p : otherPlayers) {
+            if (p.isWin()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void checkIfWithinVisible() {
@@ -225,10 +265,12 @@ public class Join extends State implements StateMethods {
                         timerOverlay.draw(g);
                     }
 
-                    if (gameOver) {
+                    if (!player.isAlive()) {
                         gameOverOverlay.draw(g);
-                    } else if (gameWin) {
-                        levelCompleteOverlay.draw(g);
+                    }
+
+                    if (gameDone) {
+                        levelCompleteOverlay.draw(g, gameWin);
                     }
                 }
             }

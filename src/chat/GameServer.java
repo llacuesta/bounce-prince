@@ -16,11 +16,14 @@ public class GameServer implements Runnable {
     private int playerCount = 0;
     private int numPlayers;
     private List<GamePlayer> gamePlayers;
-
     private DatagramSocket serverSocket = null;
     private int port = 9876;
-
     private Thread t = new Thread(this);
+
+    // Game Logic Booleans
+    private boolean winnerFound = false;
+    private boolean allDead = false;
+    private int deadCount = 0;
 
     // Constructor
     public GameServer() {
@@ -97,7 +100,22 @@ public class GameServer implements Runnable {
             int playerAction = Integer.parseInt(tokens[4]);
             int flipX = Integer.parseInt(tokens[5]);
             int flipW = Integer.parseInt(tokens[6]);
-            int yLevelOffset = Integer.parseInt(tokens[7]);
+            boolean isWin = Boolean.parseBoolean(tokens[7]);
+            boolean isAlive = Boolean.parseBoolean(tokens[8]);
+            String timeOfDeath = tokens[9];
+            String timeOfWin = tokens[10];
+            int yLevelOffset = Integer.parseInt(tokens[11]);
+
+            // Checking values
+            if (isWin) {
+                this.winnerFound = true;
+            }
+            if (isAlive) {
+                deadCount++;
+            }
+            if (deadCount == 3) {
+                this.allDead = true;
+            }
 
             // Setting Values
             gamePlayer = getPlayerByID(gamePlayerID);
@@ -107,6 +125,10 @@ public class GameServer implements Runnable {
             gamePlayer.getPlayer().setPlayerAction(playerAction);
             gamePlayer.getPlayer().setFlipX(flipX);
             gamePlayer.getPlayer().setFlipW(flipW);
+            gamePlayer.getPlayer().setWin(isWin);
+            gamePlayer.getPlayer().setAlive(isAlive);
+            gamePlayer.getPlayer().setTimeOfDeath(timeOfDeath);
+            gamePlayer.getPlayer().setTimeOfWin(timeOfWin);
             gamePlayer.setyLevelOffset(yLevelOffset);
 
             // Broadcast the player's movement to all clients
@@ -160,7 +182,15 @@ public class GameServer implements Runnable {
             }
         } else {
             int minOffset = minOffset(gamePlayers);
-            String message = "OTS," + otherPlayers.size();
+            String message;
+
+            if (winnerFound) {
+                message = "WIN," + otherPlayers.size();
+            } else if (allDead) {
+                message = "END," + otherPlayers.size();
+            } else {
+                message = "OTS," + otherPlayers.size();
+            }
             for (Player p : otherPlayers) {
                 message += "," + p.getPlayerNum()
                         + "," + p.getX()
@@ -168,6 +198,10 @@ public class GameServer implements Runnable {
                         + "," + p.getPlayerAction()
                         + "," + p.getFlipX()
                         + "," + p.getFlipW()
+                        + "," + p.isWin()
+                        + "," + p.isAlive()
+                        + "," + p.getTimeOfDeath()
+                        + "," + p.getTimeOfWin()
                         + "," + minOffset;
             }
             byte[] buffer = message.getBytes();
