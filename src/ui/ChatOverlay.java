@@ -7,11 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class ChatOverlay extends JPanel {
 
+    private JScrollPane scrollText;
     public JTextArea chatTextArea, fillerArea;
     private JTextField chatTextField;
     private JButton chatSendButton;
@@ -33,6 +36,14 @@ public class ChatOverlay extends JPanel {
         chatTextArea.setEditable(false);
         chatTextArea.setBackground(new Color(0,0,0,30));
         chatTextArea.setForeground(Color.WHITE);
+
+        scrollText = new JScrollPane(chatTextArea);
+        scrollText.setBackground(new Color(0,0,0,30));
+        scrollText.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
+            public void adjustmentValueChanged(AdjustmentEvent e) {  
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());  
+            }
+        });
 
         chatTextField = new JTextField(20);
         chatTextField.setBackground(new Color(0,0,0,30));
@@ -68,7 +79,7 @@ public class ChatOverlay extends JPanel {
         });
 
         add(filler, BorderLayout.NORTH);
-        add(chatTextArea, BorderLayout.CENTER);
+        add(scrollText, BorderLayout.CENTER);
         add(chatTextField, BorderLayout.SOUTH);
         add(chatSendButton, BorderLayout.EAST);
 
