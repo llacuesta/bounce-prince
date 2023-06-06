@@ -7,12 +7,16 @@ import entities.Player;
 import levels.LevelHandler;
 import main.Game;
 import ui.*;
+import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import javax.swing.ImageIcon;
 
 public class Join extends State implements StateMethods {
 
@@ -48,12 +52,24 @@ public class Join extends State implements StateMethods {
     private boolean isLobby = true;
     private boolean gameDone = false;
 
+    private BufferedImage background;
+	private int joinX, joinY, joinWidth, joinHeight;
+
     // Constructor
     public Join(Game game) {
         super(game);
         initClasses();
         calculateOffset();
+        loadBackground();
     }
+
+    private void loadBackground() {
+		background = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
+		joinWidth = background.getWidth();
+		joinHeight = background.getHeight();
+		joinX = (Game.GAME_WIDTH / 2) - (joinWidth / 2);
+		joinY = (Game.GAME_HEIGHT / 2) - (joinHeight / 2) + 38;
+	}
 
     // Init Method
     private void initClasses() {
@@ -232,13 +248,15 @@ public class Join extends State implements StateMethods {
     // Render Method
     @Override
     public void draw(Graphics g) {
+
         // Getting Chat interface
         if (!Objects.isNull(game.getGamePanel()) && interfacesInitialized) {
             if (!client.isClientStarted()) {
                 joinInterface.setJoinVisible(true);
 
-                g.setColor(new Color(0, 0, 0));
-                g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+                Image BG = new ImageIcon(getClass().getResource("/assets/background.gif")).getImage();
+		        g.drawImage(BG, (int) (240 * Game.TILE_SCALE), 0, (int) (240 * -Game.TILE_SCALE), (int) (200 * Game.TILE_SCALE), null);
+		
             } else {
                 // Change render according to room
                 if (isLobby && !isPlaying) {
