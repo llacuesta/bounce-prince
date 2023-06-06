@@ -33,7 +33,8 @@ public class GamePanel extends JPanel {
 
 		// Chat Interface
 		chatInterface = new ChatOverlay();
-		add(chatInterface, BorderLayout.EAST);
+		add(chatInterface, BorderLayout.SOUTH);
+
 		// Join Interface
 		joinInterface = new JoinOverlay();
 		add(joinInterface, BorderLayout.SOUTH);
