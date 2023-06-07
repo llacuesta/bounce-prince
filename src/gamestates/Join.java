@@ -114,7 +114,7 @@ public class Join extends State implements StateMethods {
             player.update();
 
             // Starting up game
-            if (!isPlaying && otherPlayers.size() == 1) {
+            if (!isPlaying && otherPlayers.size() == 3) {
                 // Initialize new level, new player position, crown
                 levelHandler = new LevelHandler(game, 1);
                 player.setX(200);
