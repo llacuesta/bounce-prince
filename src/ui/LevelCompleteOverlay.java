@@ -38,7 +38,7 @@ public class LevelCompleteOverlay {
         g.setColor(Color.white);
         g.setFont(font);
         if (gameWin) {
-            g.drawString("BY REACHING", 325, (int) (73 * Game.TILE_SCALE));
+            g.drawString("BY REACHING", 395, (int) (73 * Game.TILE_SCALE));
             g.drawString("THE CROWN FIRST", 360, (int) (80 * Game.TILE_SCALE));
         } else {
             g.drawString("BY SURVIVING", 375, (int) (73 * Game.TILE_SCALE));
