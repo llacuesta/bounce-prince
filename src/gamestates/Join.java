@@ -175,7 +175,7 @@ public class Join extends State implements StateMethods {
                     this.gameDone = true;
 
                     if (!player.isWin()) {
-                        player.setWin(true);
+                    	player.setWin(true);
                         player.setTimeOfWin(timerOverlay.getSavedTime());
 
                         System.out.println("Time of win: " + player.getTimeOfWin());
@@ -288,7 +288,7 @@ public class Join extends State implements StateMethods {
                     }
 
                     if (gameDone) {
-                        levelCompleteOverlay.draw(g, gameWin);
+                        levelCompleteOverlay.draw(g, otherPlayers, player, gameWin);
                     }
                 }
             }

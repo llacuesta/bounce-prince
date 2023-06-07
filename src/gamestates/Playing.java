@@ -127,7 +127,7 @@ public class Playing extends State implements StateMethods {
 		if (gameOver) {
 			gameOverOverlay.draw(g);
 		} else if (gameWin) {
-			levelCompleteOverlay.draw(g, gameWin);
+			levelCompleteOverlay.draw(g, otherPlayers, player, gameWin);
 		}
 	}
 	

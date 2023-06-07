@@ -209,11 +209,13 @@ public class GamePlayer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (true && !endClient) {
             // Check if the player has moved
             sendPlayerDetails();
             receivePlayerDetails();
         }
+        sendPlayerDetails();
+        receivePlayerDetails();
     }
 
     public void startGamePlayer() {

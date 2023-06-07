@@ -28,7 +28,7 @@ public class LevelCompleteOverlay {
     }
 
     // Render methods
-    public void draw(Graphics g, boolean gameWin) {
+    public void draw(Graphics g, ArrayList<Player> otherPlayers, Player player, boolean gameWin) {
         // Import font
         font = LoadSave.ImportFont(LoadSave.FONT).deriveFont(30f);
 
@@ -37,13 +37,26 @@ public class LevelCompleteOverlay {
 
         g.setColor(Color.white);
         g.setFont(font);
-        if (gameWin) {
-            g.drawString("BY REACHING", 395, (int) (73 * Game.TILE_SCALE));
-            g.drawString("THE CROWN FIRST", 360, (int) (80 * Game.TILE_SCALE));
-        } else {
-            g.drawString("BY SURVIVING", 375, (int) (73 * Game.TILE_SCALE));
-            g.drawString("THE LONGEST", 385, (int) (80 * Game.TILE_SCALE));
+        
+        ArrayList<Player> allPlayers = new ArrayList<>(otherPlayers);
+        allPlayers.add(player);
+        
+        Player winner = null;
+        for (Player p : allPlayers) {
+        	if (p.isWin()) winner = p;
         }
+        
+        g.drawString("P" + winner.getPlayerNum() + " WON", 420, (int) (73 * Game.TILE_SCALE));
+        
+//        if (player.isWin()) {
+//        	
+//        	g.drawString("BY REACHING", 395, (int) (80 * Game.TILE_SCALE));
+//            g.drawString("THE CROWN FIRST", 360, (int) (87 * Game.TILE_SCALE));
+//        } else {
+//        	g.drawString("P" + winner.getPlayerNum() + " WON", 420, (int) (73 * Game.TILE_SCALE));
+//            g.drawString("BY SURVIVING", 375, (int) (80 * Game.TILE_SCALE));
+//            g.drawString("THE LONGEST", 385, (int) (87 * Game.TILE_SCALE));
+//        }
 
         g.drawImage(winScreen, winX, winY, winW, winH, null);
     }
